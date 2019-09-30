@@ -1,0 +1,1427 @@
+--报表统计数据脚本
+
+select a.GROUP_NAME,count(1) from tt_loan a where a.CREATE_DATE>'2018-10-01 00:00:00' and a.CREATE_DATE <'2018-11-01 00:00:00'
+group by a.GROUP_NAME ORDER BY count(1) desc
+;
+
+
+select a.GROUP_NAME,count(1) from tt_loan a where 
+a.CREATE_DATE>'2018-10-01 00:00:00' and a.CREATE_DATE <'2018-11-01 00:00:00'
+and a.`STATUS` in (20641005,20641006,20641007,20641008,20641009,20641012,20641018)
+group by a.GROUP_NAME ORDER BY count(1) desc
+;
+
+
+---2018.8.3
+
+alter table tt_loan_appauthitem add gps_fix varchar(30);
+
+ALTER TABLE `hxmotor`.`tt_bank_icbc_check` CHANGE `customer_industy_approval` `customer_industy_approval` VARCHAR(1000);
+ALTER TABLE `hxmotor`.`tt_bank_icbc_check` CHANGE `credit_account_normal` `credit_account_normal` VARCHAR(1000) ;
+ALTER TABLE `hxmotor`.`tt_bank_icbc_check` CHANGE `house_is_satisfy` `house_is_satisfy` VARCHAR(1000);
+
+
+
+UPDATE `hxmotor`.`tc_function` SET `FUNC_NAME` = '家访资料录入' WHERE `FUNC_ID` = '30100005'; 
+
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2064', '20641018', '家访信息录入', '借款申请单状态', NULL, NULL, NULL, NULL, '1'); 
+
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('30100008', '30100000', 'carLoan/customer/homeVisitAttachQueryInit', '家访资料录入', '10021001', '10011001', '30100008', NULL, NULL, NULL, NULL, NULL, '1');
+
+
+
+ALTER TABLE `hxmotor`.`tt_visit_home` ADD COLUMN `apply_birth_address` VARCHAR(300) NULL COMMENT '户籍所在地址';
+
+
+
+ALTER TABLE `hxmotor`.`tt_loan` ADD COLUMN `SEND_BANK` INT(8) NULL COMMENT '报送银行' AFTER `CREDIT_STATUS`;
+
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `VER`) VALUES ('2070', '20701001', '工行', '报送银行', '1'); 
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `VER`) VALUES ('2070', '20701002', '徽行', '报送银行', '1'); 
+
+ALTER TABLE `hxmotor`.`tt_bank_icbc_check` ADD COLUMN `co_rate` DECIMAL(8,2) NULL COMMENT '合同费率' AFTER `chairman_option`; 
+
+UPDATE `hxmotor`.`tm_fix_code` SET `CODE_NAME` = '家访信息已录' WHERE `CODE_TYPE` = '2064' AND `CODE` = '20641018'; 
+
+
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('30100009', '30100000', 'carLoan/customer/customerTransferQueryInit', '客户移交', '10021001', '10011001', '30100009', NULL, NULL, NULL, NULL, NULL, '1');
+
+
+
+--财务出账 待上线
+ALTER TABLE `hxmotor`.`tt_finance_account` ADD COLUMN `loan_amount_cap` VARCHAR(500) NULL COMMENT '借款金额大写' AFTER `ver`, ADD COLUMN `actual lending_amount_cap` VARCHAR(500) NULL COMMENT '实际放款额大写' AFTER `loan_amount_cap`; 
+
+ALTER TABLE `hxmotor`.`tt_finance_account` ADD COLUMN `status` INT(8) NULL COMMENT '出账单状态' AFTER `actual lending_amount_cap`, ADD COLUMN `apply_no` VARCHAR(30) NULL COMMENT '出账单编号' AFTER `status`; 
+
+
+
+ALTER TABLE `hxmotor`.`tt_finance_account` CHANGE `actual lending_amount` `actual_lending_amount` DECIMAL(10,2) NULL COMMENT '实际放款额', CHANGE `actual lending_amount_cap` `actual_lending_amount_cap` VARCHAR(500) CHARSET utf8 COLLATE utf8_general_ci NULL COMMENT '实际放款额大写'; 
+
+
+
+--工行费率
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('10400003', '10400000', 'system/bank/icbcInit', '工行费率维护', '10021001', '10011001', '10400002', NULL, NULL, NULL, NULL, NULL, '1'); 
+
+
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('10400004', '10400000', 'system/jzg/jzgInit', '精真估报告查询', '10021001', '10011001', '10400004', NULL, NULL, NULL, NULL, NULL, '1');
+
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('20000000', '0', '', '经销商管理', '10021001', '10011001', '30310000', 'fa  fa-glass', '1', '2018-08-27 10:58:05', '1', '2018-08-27 10:58:11', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('20100000', '20000000', 'dealer/manager/recordInit', '经销商备案', '10021003', '10011001', '30310001', '', '1', '2018-08-27 10:58:05', '1', '2018-08-27 10:58:11', '1');
+
+
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000001', '50000000', 'finance/account/financeApplyInit', '出账申请', '10021001', '10011001', '50000001', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000002', '50000000', 'finance/account/financeElcAuditInit', '风控副经理', '10021001', '10011001', '50000002', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000003', '50000000', 'finance/account/innerManagerAuditInit', '内勤经理', '10021001', '10011001', '50000003', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000004', '50000000', 'finance/account/riskManagerAuditInit', '风控经理', '10021001', '10011001', '50000004', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000005', '50000000', 'finance/account/businessVpAuditInit', '副总经理', '10021001', '10011001', '50000005', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000006', '50000000', 'finance/account/chairManAuditInit', '董事长', '10021001', '10011001', '50000006', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000007', '50000000', 'finance/account/financeManagerAuditInit', '财务经理', '10021001', '10011001', '50000007', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('50000010', '50000000', 'finance/account/accountQueryInit', '出账查询', '10021001', '10011001', '50000010', '', '1', '2018-08-27 17:15:57', '1', '2018-08-27 17:16:01', '1');
+
+
+--财务出账申请状态
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711001', '已保存', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711002', '退回', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711003', '拒绝', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711004', '风控副经理(CA)审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711005', '风控副经理(内勤)审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711006', '风控经理审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711007', '业务副总审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711008', '董事长审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711009', '财务审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711010', '已放款', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711011', '运维经理(工行)审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711012', '运维副经理(徽行)审核', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+
+-- 公司类型
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('1004', '10041003', 'SP代理公司', '公司类型', '2007-08-17 15:25:21', '0', '2017-06-09 10:01:01', NULL, '1');
+
+
+
+--备案经销商状态：未备案、已备案
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2081', '20811001', '未备案', '备案经销商状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2081', '20811002', '已备案', '备案经销商状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+
+
+-- 备案经销商表新增字段  2019-01-03
+ALTER TABLE `hxmotor`.`tm_dealer_file` ADD COLUMN `dealer_status` INT(8) NULL COMMENT '备案状态：已备案、未备案;2081' AFTER `ver`, ADD COLUMN `start_date` DATETIME NULL COMMENT '生效开始日期' AFTER `dealer_status`, ADD COLUMN `end_date` DATETIME NULL COMMENT '生效结束日期' AFTER `start_date`, ADD COLUMN `status` INT(8) DEFAULT 10011001 NULL COMMENT '状态：有效、无效' AFTER `end_date`;
+
+-- 套打新增共偿人的相关信息 2019-01-05
+ALTER TABLE `hxmotor`.`tt_package_info` ADD COLUMN `mate_work_address` TEXT NULL COMMENT '配偶单位地址' AFTER `engine_displace`, ADD COLUMN `mate_work_position` VARCHAR(80) NULL COMMENT '配偶职位' AFTER `mate_work_address`, ADD COLUMN `mate_work_year` VARCHAR(20) NULL COMMENT '配偶现职年限' AFTER `mate_work_position`; 
+ALTER TABLE `hxmotor`.`tt_package_info` ADD COLUMN `config_info` TEXT NULL COMMENT '车辆配置信息' AFTER `mate_work_year`; 
+ALTER TABLE `hxmotor`.`tt_package_info` ADD COLUMN `guarantee_work_unit` TEXT NULL COMMENT '担保人工作单位' AFTER `guarantee_address`;
+
+-- gps安装情况表
+CREATE TABLE `tt_gps_install` (
+  `install_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'gps安装ID',
+  `finance_id` BIGINT(14) NOT NULL COMMENT '出账表ID',
+  `loan_id` BIGINT(14) NOT NULL COMMENT '申请单ID',
+  `gps_quantity` INT(3) DEFAULT NULL COMMENT 'GPS安装数量',
+  `install_day` INT(3) DEFAULT NULL COMMENT '安装超期天数：新车7天,二手车2天',
+  `delay_day` INT(3) DEFAULT NULL COMMENT '实际超期天数',
+  `install_date` DATETIME DEFAULT NULL COMMENT '安装日期',
+  `delay_reson` TEXT COMMENT '超期原因',
+  `vin` VARCHAR(30) COMMENT '车辆vin码',
+  `gps_no` VARCHAR(30) COMMENT 'gps编号',
+  `status` INT(8) DEFAULT NULL COMMENT '安装状态：2078 未安装、已安装',
+  `is_delay` INT(8) DEFAULT NULL COMMENT '是否超期：1278',
+  `remark` TEXT COMMENT '备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`install_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- gps库存表
+CREATE TABLE `tt_gps_stock` (
+  `gps_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'gpsID',
+  `gps_no` VARCHAR(30) COMMENT 'gps编号',
+  `receive_quantity` INT(3) DEFAULT NULL COMMENT 'GPS领取个数',
+  `receive_date` DATETIME DEFAULT NULL COMMENT '领取日期',
+  `receive_person` VARCHAR(60) COMMENT '接收人',
+  `sign_person` VARCHAR(60) COMMENT '领取人签字',
+  `status` INT(8) DEFAULT NULL COMMENT '安装状态：2078 未安装、已安装',
+  `is_receive` INT(8) DEFAULT NULL COMMENT '是否领取：1278',
+  `remark` TEXT COMMENT '备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`gps_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 还款提醒状态   逾期客户跟进状态  2019-01-05
+
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2082', '20821001', '提醒成功', '还款提醒状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2082', '20821002', '提醒失败', '还款提醒状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2083', '20831001', '正常还款', '逾期客户跟进状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2083', '20831002', '逾期未移交', '逾期客户跟进状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2083', '20831003', '逾期已移交', '逾期客户跟进状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+
+-- 保险上游资源 2019-01-05
+CREATE TABLE `tt_insurance_up_resource` (
+  `resource_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '资源ID',
+  `resource_name` VARCHAR(180) COMMENT '上游资源名称',
+  `belong_company` VARCHAR(180) COMMENT '隶属公司',
+  `contract_person` VARCHAR(80) COMMENT '对接人',
+  `contract_mobile` VARCHAR(30) COMMENT '联系电话',
+  `resource_type` INT(8) DEFAULT NULL COMMENT '资源类型：2084',
+  `status` INT(8) DEFAULT 10011001 COMMENT '状态：1001 有效、无效',
+  `remark` TEXT COMMENT '备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`resource_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 备案经销商为直客的需要分公司经理确认 2019-01-14
+ALTER TABLE `hxmotor`.`tt_loan` ADD COLUMN `DIRECT_STATUS` INT(8) DEFAULT 20801002 NULL COMMENT '直客处理状态：未处理、已处理' AFTER `IS_FREE_HOME`;
+ALTER TABLE `hxmotor`.`tm_dealer_file` ADD COLUMN `is_direct` INT(8) DEFAULT 12781002 NULL COMMENT '是否直客' AFTER `main_business`; 
+-- 财务退款时间  2019-01-17
+ALTER TABLE `hxmotor`.`tt_finance_account` ADD COLUMN `refund_date` DATETIME NULL COMMENT '财务退款时间' AFTER `secong_loan_status`; 
+
+--财务退款更新退款时间脚本
+update tt_finance_account a set a.refund_date = 
+(select max(b.APPROVAL_DATE) from tt_finance_appauthitem b where a.finance_id= b.finance_id
+	and b.APPROVAL_RESULT='20711014'
+)
+where a.`status` = 20711014;
+
+
+
+--产品定价表新旧时间切换  2019-02-14
+INSERT INTO `hxmotor`.`tc_sys_config` (`SYS_CONFIG_KEY`, `SYS_CONFIG_NAME`, `SYS_CONFIG_VALUE`, `SYS_CONFIG_DESC`, `IS_EDIT`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('10011005', 'productDate', '2019-03-01 00:00:00', '产品定价时间表', '10011002', NULL, NULL, NULL, '2019-02-11 15:14:02', '1');
+
+--财务放款新增作废状态
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711016', '作废', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+
+--新增客户表 2019-03-18
+CREATE TABLE `tm_customer` (
+  `customer_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '客户ID',
+  `name` VARCHAR(20) COMMENT '姓名',
+  `sex` VARCHAR(10) COMMENT '性别',
+  `nation` VARCHAR(10) COMMENT '名族',
+  `birth` VARCHAR(30) COMMENT '出生日期',
+  `address` VARCHAR(300)  COMMENT '地址',
+  `idNo` VARCHAR(18)  COMMENT '身份证号码',
+  `authority` VARCHAR(30) COMMENT '发证机关',
+  `valid_date` VARCHAR(30) COMMENT '证件有效期',
+  `fileUrl` VARCHAR(200) COMMENT '文件地址',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`customer_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('30100002', '30000000', 'carLoan/customer/idVerificationInit', '客户身份验证', '10021001', '10011001', '30100002', '', '1', '2019-03-12 15:31:01', '1', '2019-03-12 15:31:06', '1');
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('34000000', '30000000', 'carLoan/customer/bankBusinessApplyInit', '业务申请书计算', '10021001', '10011001', '33000000', '', '1', '2018-11-08 11:15:13', '1', '2018-11-08 11:15:20', '1');
+
+--汽车资源新增字段 2019-03-21
+ALTER TABLE `hxmotor`.`tt_vehicle_resource` ADD COLUMN `resource_type` VARCHAR(20) NULL COMMENT '资源类型：资源、直客' AFTER `input_person`, ADD COLUMN `vin_amount` DECIMAL(14,2) NULL COMMENT '车架利润' AFTER `resource_type`, ADD COLUMN `insurance_amount` DECIMAL(14,2) NULL COMMENT '保险利润' AFTER `vin_amount`, ADD COLUMN `next_year_insurance_amount` DECIMAL(14,2) NULL COMMENT '次年保险押金' AFTER `insurance_amount`, ADD COLUMN `decorate_amount` DECIMAL(14,2) NULL COMMENT '装潢利润' AFTER `next_year_insurance_amount`, ADD COLUMN `loan_profit_amount` DECIMAL(14,2) NULL COMMENT '贷款利润' AFTER `decorate_amount`, ADD COLUMN `service_amount` DECIMAL(14,2) NULL COMMENT '综合服务费' AFTER `loan_profit_amount`;
+
+--二手车评估报告新增字段  2018-03-28
+ALTER TABLE `hxmotor`.`tt_jzg_info` ADD COLUMN `image_list` TEXT NULL COMMENT '必拍图片' AFTER `ver`, ADD COLUMN `append_image_list` TEXT NULL COMMENT '附加图片' AFTER `image_list`; 
+
+--同盾报告新增字段   2019-03-29
+ALTER TABLE `hxmotor`.`tt_td_report` ADD COLUMN `VEHICLE_PROPERTY` INT(8) NULL COMMENT '车辆属性' AFTER `MOBILE_PHONE`, ADD COLUMN `GROUP_CODE` VARCHAR(30) NULL COMMENT '分公司' AFTER `VEHICLE_PROPERTY`, ADD COLUMN `TD_MESSAGE` TEXT NULL COMMENT '同盾报告内容' AFTER `GROUP_CODE`, ADD COLUMN `TD_SCORE` VARCHAR(30) NULL COMMENT '同盾分数' AFTER `TD_MESSAGE`; 
+
+ALTER TABLE `hxmotor`.`tt_br_report` ADD COLUMN `VEHICLE_PROPERTY` INT(8) NULL COMMENT '车辆属性' AFTER `MOBILE_PHONE`, ADD COLUMN `GROUP_CODE` VARCHAR(30) NULL COMMENT '分公司' AFTER `VEHICLE_PROPERTY`, ADD COLUMN `BR_MESSAGE` TEXT NULL COMMENT '百融报告内容' AFTER `GROUP_CODE`, ADD COLUMN `BR_SCORE` VARCHAR(30) NULL COMMENT '百融分数' AFTER `BR_MESSAGE`;
+
+--客户验证表新增字段 手机号码  2019-03-29
+ALTER TABLE `hxmotor`.`tm_customer` ADD COLUMN `mobile` VARCHAR(20) NULL COMMENT '手机号码' AFTER `address`;
+
+--调额申请新增信息 2019-03-29 
+INSERT INTO `hxmotor`.`tc_function` (`FUNC_ID`, `PAR_FUNC_ID`, `FUNC_CODE`, `FUNC_NAME`, `FUNC_TYPE`, `FUNC_STATUS`, `SORT_ORDER`, `FUNC_ICON`, `CREATE_BY`, `CREATE_DATE`, `UPDATE_BY`, `UPDATE_DATE`, `VER`) VALUES ('30700024', '30000000', 'carLoan/adjustmentData/adjustInnerOfficeAuditInit', '调额审核(内勤)', '10021001', '10011001', '30700022', NULL, NULL, NULL, NULL, NULL, '1');
+
+INSERT INTO tm_fix_code ( CODE_TYPE, CODE,CODE_NAME,REMARK, CREATE_DATE,UPDATE_DATE,ver)
+                       VALUES
+                       ( 2086, 20861006,'内勤审核','调额资料申请状态',NOW(),NOW(),'1');
+                  
+UPDATE tm_fix_code 
+SET 
+    CODE_NAME = '调额专员审核'
+WHERE
+   CODE = '20861002';
+                       
+CREATE TABLE `tt_adjustment_data_flow` (
+  `flow_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'flowID',
+  `adjust_id` BIGINT(14) NOT NULL COMMENT '调额ID',
+  `loan_id` BIGINT(14) DEFAULT NULL COMMENT '进件单id',
+  `operate_person` VARCHAR(60) DEFAULT NULL COMMENT '操作人员姓名',
+  `flow_date` DATETIME DEFAULT NULL COMMENT '流水日期',
+  `flow_type` INT(8) DEFAULT NULL COMMENT '对应调额状态',
+  `remark` TEXT COMMENT '操作备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `var` INT(8) DEFAULT '1',
+  PRIMARY KEY (`flow_id`)
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 汽车保险上游资源新增字段 类别  2019-04-01
+ALTER TABLE `hxmotor`.`tt_insurance_up_resource` ADD COLUMN `resource_kind` VARCHAR(20) NULL COMMENT '类别：汽车、保险' AFTER `resource_id`; 
+
+
+-- 钉钉用户表  2019-04-01
+CREATE TABLE `tt_dd_user` (
+  `dd_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ddId',
+  `dd_user_id` VARCHAR(30) COMMENT '钉钉用户ID',
+  `user_name` VARCHAR(30) COMMENT '用户姓名',
+  `mobile` VARCHAR(20) COMMENT '手机号码',
+  `flag` INT(1) DEFAULT NULL COMMENT '标识',
+  `status` INT(8) DEFAULT NULL COMMENT '',
+  `remark` TEXT COMMENT '备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`dd_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 钉钉提醒获取钉钉id表  2019-04-01
+CREATE TABLE `tt_dd_warn` (
+  `warn_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ddId',
+  `dd_user_id` VARCHAR(30) COMMENT '钉钉用户ID',
+  `user_name` VARCHAR(30) COMMENT '用户姓名',
+  `flag` INT(1) DEFAULT NULL COMMENT '标识',
+  `loan_status` INT(8) DEFAULT NULL COMMENT '进件状态',
+  `finance_status` INT(8) DEFAULT NULL COMMENT '出账状态',
+  `group_code` VARCHAR(10) COMMENT '内勤对应分公司',
+  `vehicle_property` INT(8) COMMENT '新车、二手车',
+  `remark` TEXT COMMENT '备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`warn_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+-- 初始化数据信息
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('1', '0643295606654321', '何悦', NULL, '20641006', '20711006', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('2', '064033476322030789', '周鲁宾', NULL, '20641005', '20711004', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('3', '094119351720838233', '侯诗婷', NULL, NULL, '20711005', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('4', '0458330318686986', '冯静', '0', NULL, NULL, 'HEFEI', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('5', '064519655031301751', '程鹏军', '0', NULL, NULL, 'LIUAN', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('6', '0115263844651077', '严磊', '0', NULL, NULL, 'BOZHOU', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('7', '071232024024151037', '徐乃乐', '0', NULL, NULL, 'CHUZHOU', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('8', '111735211536059804', '辛夏锋', '0', NULL, NULL, 'ANQING', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('9', '094120192035164710', '许志祥', '0', NULL, NULL, 'FUYANG', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('10', '011130364239391629', '鲍欢欢', '0', NULL, NULL, 'SUZHOU', NULL, NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('11', '15062502371186964', '郝金', '1', '20641004', '20711013', 'LIUAN', '20501001', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('12', '15062502371186964', '郝金', '1', '20641004', '20711013', 'LIUAN', '20501002', '', '2019-04-01 15:43:47', NULL, '2019-04-01 15:43:58', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('13', '15062502371186964', '郝金', '1', '20641004', '20711013', 'ANQING', '20501001', '', '2019-04-01 15:44:27', NULL, '2019-04-01 15:44:32', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('14', '15062502371186964', '郝金', '1', '20641004', '20711013', 'ANQING', '20501002', '', '2019-04-01 15:43:47', NULL, '2019-04-01 15:43:58', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('15', '181840306129469853', '王翠玲', '1', '20641004', '20711013', 'FUYANG', '20501001', '', NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('16', '1358500410936978', '王丽', '1', '20641004', '20711013', 'SUZHOU', '20501002', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('17', '1358500410936978', '王丽', '1', '20641004', '20711013', 'SP', '20501001', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('18', '1358500410936978', '王丽', '1', '20641004', '20711013', 'SP', '20501002', '', '2019-04-01 15:47:50', NULL, '2019-04-01 15:47:52', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('19', '0503516607854097', '杨芹', '1', '20641004', '20711013', 'BOZHOU', '20501001', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('20', '101617165337619752', '陈伟伟', '1', '20641004', '20711013', 'HEFEI', '20501001', NULL, '2019-04-01 15:51:02', NULL, '2019-04-01 15:51:07', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('21', '101617165337619752', '陈伟伟', '1', '20641004', '20711013', 'CHUZHOU', '20501001', '', '2019-04-01 15:51:02', NULL, '2019-04-01 15:51:07', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('22', '0441160725950344', '王艳', '1', '20641004', '20711013', 'HEFEI', '20501002', NULL, '2019-04-01 15:52:14', NULL, '2019-04-01 15:52:18', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('23', '0441160725950344', '王艳', '1', '20641004', '20711013', 'CHUZHOU', '20501002', '', '2019-04-01 15:52:14', NULL, '2019-04-01 15:52:18', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('24', '0441160725950344', '王艳', '1', '20641004', '20711013', 'FUYANG', '20501002', '', '2019-04-01 15:52:14', NULL, '2019-04-01 15:52:18', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('25', '0441160725950344', '王艳', '1', '20641004', '20711013', 'BOZHOU', '20501002', '', '2019-04-01 15:52:14', NULL, '2019-04-01 15:52:18', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('26', '0503516607854097', '杨芹', '1', '20641004', '20711013', 'SUZHOU', '20501001', '', '2019-04-01 15:52:14', NULL, '2019-04-01 15:52:18', NULL, '1');
+INSERT INTO `hxmotor`.`tt_dd_warn` (`warn_id`, `dd_user_id`, `user_name`, `flag`, `loan_status`, `finance_status`, `group_code`, `vehicle_property`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('27', '153138661738313090', '韦玉梅', '2', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1');
+
+
+--产品类别维护  2019-04-03
+
+CREATE TABLE `tm_product_type` (
+  `type_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '产品类别id',
+  `product_code` VARCHAR(20) COMMENT '产品代码',
+  `product_name` VARCHAR(100) COMMENT '产品名称',
+  `status` INT(8) COMMENT '状态：有效、无效',
+  `remark` TEXT COMMENT '备注',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`type_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 兜底SP新增导入功能  2019-04-03  需要更改产品类别
+INSERT INTO `hxmotor`.`tm_product_price` ( `bank_type`, `product_code`, `product_name`, `loan_term`, `business_type`, `company_rate`, `out_rate`, `risk_rate`, `gps_amount`, `company_other_amount`, `out_other_amount`, `start_amount`, `end_amount`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ( '20701001', 'AHXSH', '安徽鑫盛合', '20671003', '20501001', '10.50', '13.00', '1.00', '350.00', '100.00', '500.00', '0.00', '500000.00', '2018-09-29 10:00:22', '1000006587', '2018-10-11 09:43:35', '1000006587', '1');
+INSERT INTO `hxmotor`.`tm_product_price` ( `bank_type`, `product_code`, `product_name`, `loan_term`, `business_type`, `company_rate`, `out_rate`, `risk_rate`, `gps_amount`, `company_other_amount`, `out_other_amount`, `start_amount`, `end_amount`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ( '20701001', 'AHXSH', '安徽鑫盛合', '20671003', '20501002', '13.00', '18.00', '1.00', '350.00', '100.00', '500.00', '0.00', '500000.00', '2018-10-11 09:27:33', '1000006587', '2018-10-11 09:27:33', '1000006587', '1');
+INSERT INTO `hxmotor`.`tm_product_price` ( `bank_type`, `product_code`, `product_name`, `loan_term`, `business_type`, `company_rate`, `out_rate`, `risk_rate`, `gps_amount`, `company_other_amount`, `out_other_amount`, `start_amount`, `end_amount`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ( '20701001', 'AHXSH', '安徽鑫盛合', '20671002', '20501001', '9.00', '10.50', '1.00', '350.00', '100.00', '500.00', '0.00', '500000.00', '2018-10-11 09:29:46', '1000006587', '2018-10-11 09:29:46', '1000006587', '1');
+INSERT INTO `hxmotor`.`tm_product_price` ( `bank_type`, `product_code`, `product_name`, `loan_term`, `business_type`, `company_rate`, `out_rate`, `risk_rate`, `gps_amount`, `company_other_amount`, `out_other_amount`, `start_amount`, `end_amount`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ( '20701001', 'AHXSH', '安徽鑫盛合', '20671002', '20501002', '11.00', '15.50', '1.00', '350.00', '100.00', '500.00', '0.00', '500000.00', '2018-10-11 09:31:41', '1000006587', '2018-10-11 09:31:41', '1000006587', '1');
+
+-- 客户表新增 驾驶证识别信息 2019-04-09
+ALTER TABLE `hxmotor`.`tm_customer` ADD COLUMN `archive_no` VARCHAR(30) NULL COMMENT '档案编号' AFTER `valid_date`, ADD COLUMN `score` VARCHAR(5) NULL COMMENT '驾驶证扣分' AFTER `archive_no`; 
+
+-- 阜阳灿连
+INSERT INTO `hxmotor`.`tm_product_price` (`product_id`, `bank_type`, `product_code`, `product_name`, `loan_term`, `business_type`, `company_rate`, `out_rate`, `risk_rate`, `gps_amount`, `company_other_amount`, `out_other_amount`, `start_amount`, `end_amount`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('62', '20701003', 'FYCL', '阜阳灿连', '20671005', '20501001', '21', '15.50', '0', '350.00', '100.00', '500.00', '0.00', '800001.00', '2018-10-11 09:31:41', '1000006587', '2018-10-11 09:31:41', '1000006587', '1');
+
+
+
+--抵押相关信息修改  2019-04-25
+ALTER TABLE `hxmotor`.`tt_mortgage` ADD COLUMN `contract_send_date` DATETIME NULL COMMENT '合同寄出日期' AFTER `status`, ADD COLUMN `is_complete` INT(8) NULL COMMENT '资料是否齐全：1278' AFTER `contract_send_date`, ADD COLUMN `miss_data_remark` VARCHAR(500) NULL COMMENT '缺资料备注' AFTER `is_complete`;
+
+-- 分公司抵押超期表
+
+CREATE TABLE `tm_branch_parameters` (
+  `parameter_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '分公司参数ID',
+  `group_code` VARCHAR(10) COMMENT '分公司',
+  `vehicle_property` INT(8) COMMENT '新车、二手车',
+  `mortgage_day` INT(2) DEFAULT NULL COMMENT '抵押天数',
+  `start_amount` decimal(10,2) DEFAULT NULL COMMENT '开始金额',
+  `end_amount` decimal(10,2) DEFAULT NULL COMMENT '结束金额',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`parameter_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `hxmotor`.`tm_branch_parameters` ADD COLUMN `archive_day` INT(2) NULL COMMENT '归档天数' AFTER `mortgage_day`, ADD COLUMN `gps_day` INT(2) NULL COMMENT 'GPS超期天数' AFTER `archive_day`; 
+
+ALTER TABLE `hxmotor`.`tt_mortgage` ADD COLUMN `is_return` INT(8) NULL COMMENT '是否退款：1278' AFTER `miss_data_remark`; 
+
+
+--删除离职用户的相关信息
+select * from tm_user a where a.REAL_NAME in ('陈舒松','张云','张涛');
+delete from tm_position_user  where exists (select 1 from tm_user b where tm_position_user.USER_ID= b.USER_ID and b.USER_STATUS=10011002)
+
+
+-- 分公司主管人员维护初始化脚本 2019-05-06
+
+CREATE TABLE `tm_sup_group` (
+  `group_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '分公司主管管理人员ID',
+  `sup_id` BIGINT(14) COMMENT '主管用户ID',
+  `sup_name` VARCHAR(20) COMMENT '主管用户姓名',
+  `team_id` BIGINT(14) COMMENT '团队人员ID',
+  `team_name` VARCHAR(20) COMMENT '团队人员姓名',
+  `group_code` VARCHAR(10) COMMENT '分公司',
+  `group_name` VARCHAR(10) COMMENT '分公司名称',
+  `status` INT(8)  COMMENT '状态：有效、无效',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`group_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+insert INTO tm_sup_group(sup_id,sup_name,team_id,team_name,group_code,group_name,status,create_date,create_by)
+select 1000006528,'盛鸿翔',a.USER_ID,a.REAL_NAME,'HEFEI','合肥',10011001,now(),1 from tm_user a where a.REAL_NAME in ('张涛','蔡琳琳','叶平','叶杨杨','陈星','赵海波');
+
+insert INTO tm_sup_group(sup_id,sup_name,team_id,team_name,group_code,group_name,status,create_date,create_by)
+select 1000006564,'张蒙',a.USER_ID,a.REAL_NAME,'BOZHOU','亳州',10011001,now(),1 from tm_user a where a.REAL_NAME in ('马茂','金鑫','夏宇','张蒙');
+
+insert INTO tm_sup_group(sup_id,sup_name,team_id,team_name,group_code,group_name,status,create_date,create_by)
+select 1000006566,'薛情情',a.USER_ID,a.REAL_NAME,'LIUAN','六安',10011001,now(),1 from tm_user a where a.REAL_NAME in ('宋丽君','许贝贝','薛情情','鲍仕华');
+
+
+--业务内勤查询驾驶证扣分情况  2019-05-13
+
+CREATE TABLE `tm_driver_score` (
+  `driver_id` BIGINT(14) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '驾驶证扣分ID',
+  `loan_id` BIGINT(14) COMMENT '借款单ID',
+  `id_no` VARCHAR(20) COMMENT '身份证号码',
+   `archive_no` VARCHAR(30) COMMENT '档案编号',
+  `score` VARCHAR(10) COMMENT '扣分情况',
+  `status` INT(8)  default 10011001 COMMENT '状态：有效、无效',
+  `create_date` DATETIME DEFAULT NULL,
+  `create_by` BIGINT(14) DEFAULT NULL,
+  `update_date` DATETIME DEFAULT NULL,
+  `update_by` BIGINT(14) DEFAULT NULL,
+  `ver` INT(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`driver_id`) USING BTREE
+) ENGINE=INNODB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- 更新系统中抵押规定的天数
+
+update tt_mortgage tmg set tmg.specifiedDays = (
+select ccc.mortgage_day from
+(
+select a.mortgage_id,c.mortgage_day from tt_mortgage a ,
+tt_finance_account b, tm_branch_parameters c
+where a.finance_id = b.finance_id  and
+c.group_code= b.company_code and c.vehicle_property= b.vehicle_property
+		and c.start_amount <=b.loan_amount  AND c.end_amount > b.loan_amount
+) ccc
+where tmg.mortgage_id = ccc.mortgage_id
+
+) where tmg.specifiedDays is null;
+
+
+-- 财务出账申请添加状态  放款确认
+INSERT INTO `hxmotor`.`tm_fix_code` (`CODE_TYPE`, `CODE`, `CODE_NAME`, `REMARK`, `CREATE_DATE`, `CREATE_BY`, `UPDATE_DATE`, `UPDATE_BY`, `VER`) VALUES ('2071', '20711017', '放款确认', '出账单状态', '2018-08-28 10:49:22', NULL, '2018-08-28 10:49:25', NULL, '1');
+-- 财务出账添加二次放款时间、回款差异处理时间
+ALTER TABLE `hxmotor`.`tt_finance_account` ADD COLUMN `second_loan_date` DATETIME NULL COMMENT '二次放款时间' AFTER `refund_date`, ADD COLUMN `dif_handle_date` DATETIME NULL COMMENT '回款差异处理时间' AFTER `second_loan_date`;
+
+
+-- 节假日表  2019-05-29
+CREATE TABLE `tm_holiday` (
+  `holiday_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '节假日ID',
+  `holiday_date` varchar(30) DEFAULT NULL COMMENT '节假日日期',
+  `type` int(8) DEFAULT NULL COMMENT '假日类型：1法定节假日,2周六、3周日',
+  `status` int(8) DEFAULT '10011001' COMMENT '状态：有效、无效',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`holiday_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+
+
+
+--行政人事档案表 2019-05-31
+
+CREATE TABLE `xz_employee_info` (
+  `employee_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '员工ID',
+  `emp_no` varchar(30) DEFAULT NULL COMMENT '员工编号',
+  `emp_name` varchar(30) DEFAULT NULL COMMENT '员工姓名',
+  `dep_name` varchar(60) DEFAULT NULL COMMENT '部门',
+  `position_name` varchar(60) DEFAULT NULL COMMENT '岗位',
+  `entry_date` datetime DEFAULT NULL COMMENT '入职时间',
+  `contract_is_offer` varchar(30) DEFAULT NULL COMMENT '劳动合同是否已经签订',
+  `contract_period` varchar(30) DEFAULT NULL COMMENT '合同期限',
+  `job_start_date` datetime DEFAULT NULL COMMENT '岗位开始时间',
+  `member_date` datetime DEFAULT NULL COMMENT '拟转正时间',
+  `full_member_date` datetime DEFAULT NULL COMMENT '实际转正时间',
+  `emp_status` varchar(30) DEFAULT NULL COMMENT '员工状态:',
+  `contract_expire_date` datetime DEFAULT NULL COMMENT '合同到期日',
+  `in_service_age` varchar(30) DEFAULT NULL COMMENT '在职司龄（月）',
+  `id_no` varchar(30) DEFAULT NULL COMMENT '身份证号码',
+  `gender` int(8) DEFAULT NULL COMMENT '性别',
+  `birth_date` datetime DEFAULT NULL COMMENT '出生日期',
+  `age` varchar(3) DEFAULT NULL COMMENT '年龄',
+  `is_job` varchar(20) DEFAULT NULL COMMENT '在职',
+  `native_place` varchar(30) DEFAULT NULL COMMENT '籍贯',
+  `nation` varchar(30) DEFAULT NULL COMMENT '名族',
+  `political status` varchar(30) DEFAULT NULL COMMENT '政治面貌',
+  `education` varchar(30) DEFAULT NULL COMMENT '学历',
+  `graduate_colleges` varchar(30) DEFAULT NULL COMMENT '毕业院校',
+  `major` varchar(30) DEFAULT NULL COMMENT '专业',
+  `study_start_end_time` varchar(30) DEFAULT NULL COMMENT '就读起始时间',
+  `upcom_start_end_time` varchar(30) DEFAULT NULL COMMENT '上家公司起始时间',
+	`upcom_name` varchar(60) DEFAULT NULL COMMENT '上家公司名称',
+	`house_holds` varchar(30) DEFAULT NULL COMMENT '户口性质',
+	`marrage_status` varchar(30) DEFAULT NULL COMMENT '婚否/生育',
+	`mobile_phone` varchar(30) DEFAULT NULL COMMENT '联系电话',
+  `emergency_person` varchar(30) DEFAULT NULL COMMENT '紧急联系人',
+  `self_relation` varchar(30) DEFAULT NULL COMMENT '与本人关系',
+`emergency_phone` varchar(30) DEFAULT NULL COMMENT '紧急联系人电话',
+`residence address` varchar(30) DEFAULT NULL COMMENT '户籍地址',
+`live_address` varchar(30) DEFAULT NULL COMMENT '现居住地址',
+`wage_card` varchar(30) DEFAULT NULL COMMENT '工行工资卡是否办理',
+`bank_no` varchar(30) DEFAULT NULL COMMENT '工资卡号',
+`bank` varchar(30) DEFAULT NULL COMMENT '开户行', 
+`mailbox` varchar(30) DEFAULT NULL COMMENT '邮箱',
+ `remark` varchar(30) DEFAULT NULL COMMENT '备注',
+  `is_complete` int(8) DEFAULT '12781002' COMMENT '档案资料是否齐全：是、否',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`employee_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- 合同管理
+CREATE TABLE `xz_contract_info` (
+  `contract_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '合同ID',
+  `contract_type` varchar(30) DEFAULT NULL COMMENT '合同类型：业务、财务、人事、行政、保险、其他',
+`file_location` varchar(30) DEFAULT NULL COMMENT '合同档案存放位置',
+`contract_no` varchar(30) DEFAULT NULL COMMENT '合同编号',
+`partner` varchar(200) DEFAULT NULL COMMENT '合作单位',
+`business_content` varchar(100) DEFAULT NULL COMMENT '业务内容',
+`contract_period` varchar(30) DEFAULT NULL COMMENT '合同期限',
+`contract_start_date` datetime DEFAULT NULL COMMENT '合同开始日期',
+`contract_end_date` datetime DEFAULT NULL COMMENT '合同结束日期',
+`contract_sign_date` datetime DEFAULT NULL COMMENT '合同签订日期',
+`partner_person` varchar(30) DEFAULT NULL COMMENT '合作方联系人',
+`partner_mobile` varchar(30) DEFAULT NULL COMMENT '合作方联系方式',
+`our_person` varchar(30) DEFAULT NULL COMMENT '我方经办人',
+`our_mobile` varchar(30) DEFAULT NULL COMMENT '我方联系方式',
+`is_due` int(8)  DEFAULT NULL COMMENT '是否到期',
+`is_renew` int(8)  DEFAULT NULL COMMENT '是否续签',
+`contract_status` int(8) DEFAULT NULL COMMENT '合同状态:履行中、终止、续签',
+`renew_contract_no` varchar(30) DEFAULT NULL COMMENT '续签合同编号',
+`remark` varchar(300) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`contract_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- 固定资产
+CREATE TABLE `xz_fixed_assets` (
+  `fix_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '固定资产ID',
+  `assets_type` varchar(30) DEFAULT NULL COMMENT '资产类型：办公设备、专用设备、办公家具、办公用品、其他',
+  `assets_no` varchar(30) DEFAULT NULL COMMENT '资产编号',
+`assets_name` varchar(200) DEFAULT NULL COMMENT '资产名称',
+`spec_brand` varchar(30) DEFAULT NULL COMMENT '规格/品牌',
+`self_purchase_rent` varchar(30) DEFAULT NULL COMMENT '自购/租用',
+`unit` varchar(10) DEFAULT NULL COMMENT '单位',
+`quantity` varchar(5) DEFAULT NULL COMMENT '数量',
+`purchase_price` DECIMAL(14,2) DEFAULT NULL COMMENT '购买/租用价格',
+`belong_depcom` varchar(30) DEFAULT NULL COMMENT '归属部门/分公司',
+`use_person` varchar(30) DEFAULT NULL COMMENT '使用人',
+`status` int(8) DEFAULT NULL COMMENT '状态:使用中、折旧、报废、转移',
+`remark` varchar(300) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`fix_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 固定资产报废表
+CREATE TABLE `xz_fixed_discard` (
+  `discard_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '报废ID',
+  `fix_id` bigint(14) NOT NULL  COMMENT '固定资产ID',
+ `discard_date` datetime DEFAULT NULL COMMENT '报废时间',
+`discard_amount` DECIMAL(10,2) DEFAULT NULL COMMENT '报废金额',
+`lead_person` varchar(30) DEFAULT NULL COMMENT '责任人',
+`remark` varchar(300) DEFAULT NULL COMMENT '备注',
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`discard_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 固定资产调拨表
+CREATE TABLE `xz_fixed_allocate` (
+  `allocate_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '调拨ID',
+  `fix_id` bigint(14) NOT NULL  COMMENT '固定资产ID',
+ `allocate_date` datetime DEFAULT NULL COMMENT '调拨时间',
+`lead_person` varchar(30) DEFAULT NULL COMMENT '责任人',
+`depreciated_amount` DECIMAL(10,2) DEFAULT NULL COMMENT '折旧金额',
+`allocate_company` varchar(150) DEFAULT NULL COMMENT '调拨公司',
+`remark` varchar(300) DEFAULT NULL COMMENT '备注',
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`allocate_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 固定资产转移表
+CREATE TABLE `xz_fixed_transfer` (
+  `transfer_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '转移ID',
+  `fix_id` bigint(14) NOT NULL  COMMENT '固定资产ID',
+ `transfer_date` datetime DEFAULT NULL COMMENT '转移时间',
+`transfer_person` varchar(30) DEFAULT NULL COMMENT '转移部门/个人',
+`transfer_reason` varchar(150) DEFAULT NULL COMMENT '转移原因',
+`remark` varchar(300) DEFAULT NULL COMMENT '备注',
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`transfer_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 查询大数据统计
+select a.GROUP_CODE,count(1) from tt_br_report a where a.`STATUS` = 1 
+and a.REPORRT_NO is not null
+and date_format(a.CREATE_DATE,'%Y-%m-%d') >= '2019-05-27'
+and date_format(a.CREATE_DATE,'%Y-%m-%d') <= '2019-05-31'
+group by a.GROUP_CODE;
+
+select a.GROUP_CODE,count(1) from tt_td_report a where a.`STATUS` = 1 
+and a.REPORRT_NO is not null
+and date_format(a.CREATE_DATE,'%Y-%m-%d') >= '2019-05-01'
+and date_format(a.CREATE_DATE,'%Y-%m-%d') <= '2019-05-31'
+group by a.GROUP_CODE;
+
+-- 删除抵押归档 6月份之前数据
+delete  from  tt_archive   
+where 
+ not exists (select 1 from tt_finance_account b where tt_archive.finance_id = b.finance_id 
+and date_format(b.finance_advance_date,'%Y-%m-%d') >= '2019-06-01'
+	and date_format(b.finance_advance_date,'%Y-%m-%d') < '2019-07-01'
+)
+
+
+
+-- 银行接口参数
+
+CREATE TABLE `tm_bank_param` (
+  `CODE_TYPE` DECIMAL(4,0) NOT NULL,
+  `CODE` DECIMAL(8,0) NOT NULL,
+  `CODE_NAME` VARCHAR(150) DEFAULT NULL,
+  `REMARK` VARCHAR(150) DEFAULT NULL,
+  `CREATE_DATE` DATETIME DEFAULT NULL,
+  `CREATE_BY` DECIMAL(14,0) DEFAULT NULL,
+  `UPDATE_DATE` DATETIME DEFAULT NULL,
+  `UPDATE_BY` DECIMAL(14,0) DEFAULT NULL,
+  `VER` DECIMAL(8,0) DEFAULT NULL,
+  PRIMARY KEY (`CODE`,`CODE_TYPE`),
+  KEY `IDX_TM_BANK_PARAM_1` (`CODE`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `hxmotor`.`tt_loan` ADD COLUMN `carType` INT(2) NULL COMMENT '业务品种' AFTER `is_risk_review`, ADD COLUMN `downloadMode` INT(2) DEFAULT 1 NULL COMMENT '材料下载方式' AFTER `carType`, ADD COLUMN `intentionPrice` DECIMAL(17,2) NULL COMMENT '意向价格' AFTER `downloadMode`, ADD COLUMN `signMode` INT(2) DEFAULT 2 NULL COMMENT '签约方式' AFTER `intentionPrice`, ADD COLUMN `bankCardNo` VARCHAR(20) NULL COMMENT '银行卡号' AFTER `signMode`, ADD COLUMN `issueAuthority` VARCHAR(60) NULL COMMENT '身份证签发机关' AFTER `bankCardNo`, ADD COLUMN `startDate` VARCHAR(10) NULL COMMENT '证件有限期起始日' AFTER `issueAuthority`, ADD COLUMN `endDate` VARCHAR(10) NULL COMMENT '证件有限期截止日' AFTER `startDate`, ADD COLUMN `familyAddress` VARCHAR(120) NULL COMMENT '住宅地址' AFTER `endDate`;
+ALTER TABLE `hxmotor`.`fs_fileupload` ADD COLUMN `FILE_KIND` VARCHAR(20) NULL COMMENT '文件种类' AFTER `VER`; 
+
+ALTER TABLE `hxmotor`.`tt_loan` ADD COLUMN `estageOrderNo` VARCHAR(60) NULL COMMENT 'e分期方订单号' AFTER `familyAddress`; 
+
+-- 银行接口记录表
+CREATE TABLE `tt_bank_interface_log` (
+  `log_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '记录ID',
+  `loan_id` bigint(14) NOT NULL  COMMENT '借款单ID',
+  `loan_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `code` varchar(10) DEFAULT NULL COMMENT 'code',
+  `msg` varchar(300) DEFAULT NULL COMMENT 'msg',
+  `estageOrderNo` varchar(60) DEFAULT NULL COMMENT 'e分期方订单号',
+  `send_msg` text DEFAULT NULL COMMENT '请求信息',
+  `return_msg` text DEFAULT NULL COMMENT '返回信息',
+  `remark` varchar(100) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`log_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--开卡表
+CREATE TABLE `tt_bank_card_apply` (
+  `card_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '记录ID',
+  `loan_id` bigint(14) NOT NULL  COMMENT '借款单ID',
+  `loan_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `custsort` int(4) DEFAULT NULL COMMENT '证件类型',
+  `custcode` varchar(18) DEFAULT NULL COMMENT '证件号码',
+  `chnsname` varchar(20) DEFAULT NULL COMMENT '姓名',
+  `engname` varchar(20) DEFAULT NULL COMMENT '姓名拼音',
+   
+`sex` int(4) DEFAULT NULL COMMENT '性别',
+`mrtlstat` int(4) DEFAULT NULL COMMENT '婚姻状况',
+`edulvl` int(4) DEFAULT NULL COMMENT '受教育程度',
+`drawmode` int(4) DEFAULT NULL COMMENT '卡片领取方式',
+`drawzono` varchar(10) DEFAULT NULL COMMENT '领卡地区号',
+`drawbrno` varchar(10) DEFAULT NULL COMMENT '领卡网点号',
+`homestat` int(4) DEFAULT NULL COMMENT '住宅状况',
+`hprovince` varchar(20) DEFAULT NULL COMMENT '住宅地址省份',
+`hcity` varchar(60) DEFAULT NULL COMMENT '住宅地址市',
+`hcounty` varchar(60) DEFAULT NULL COMMENT '住宅地址县(区)',
+`haddress` varchar(300) DEFAULT NULL COMMENT '住宅地址',
+`homezip` varchar(6) DEFAULT NULL COMMENT '住宅邮编',
+`indate` varchar(20) DEFAULT NULL COMMENT '入住日期',
+`mvblno` varchar(11) DEFAULT NULL COMMENT '手机号码',
+`email` varchar(50) DEFAULT NULL COMMENT '电子邮箱',
+`unitname` varchar(60) DEFAULT NULL COMMENT '工作单位名称',
+`duty` int(4) DEFAULT NULL COMMENT '职务',
+`cophozono` varchar(5) DEFAULT NULL COMMENT '单位电话区号',
+`cophoneno` varchar(12) DEFAULT NULL COMMENT '单位电话号码',
+`cprovince` varchar(20) DEFAULT NULL COMMENT '单位地址省份',
+`ccity` varchar(50) DEFAULT NULL COMMENT '单位地址市',
+`ccounty` varchar(50) DEFAULT NULL COMMENT '单位地址县（区）',
+
+`caddress` varchar(300) DEFAULT NULL COMMENT '工作单位地址（详细地址）',
+`corpzip` varchar(6) DEFAULT NULL COMMENT '单位邮编',
+`yearincome` DECIMAL(17,2) DEFAULT NULL COMMENT '本人年收入',
+`modelcode` int(4) DEFAULT NULL COMMENT '单位性质',
+`occptn` int(4) DEFAULT NULL COMMENT '职业及职级',
+`carstat` int(4)  DEFAULT NULL COMMENT '自购车状况',
+`reltname1` varchar(30) DEFAULT NULL COMMENT '联系人1姓名',
+`reltship1` int(4) DEFAULT NULL COMMENT '联系人1与主卡联系人关系',
+
+ 
+`reltphzon1` varchar(5) DEFAULT NULL COMMENT '联系人1联系电话区号',
+`relaphone1` varchar(12) DEFAULT NULL COMMENT '联系人1联系电话号码',
+`reltmobl1` varchar(11) DEFAULT NULL COMMENT '联系人1手机',
+`statdate` varchar(10) DEFAULT NULL COMMENT '证件有效期',
+`primnat` int(4) DEFAULT NULL COMMENT '国籍',
+`cstsign` int(4) DEFAULT NULL COMMENT '亲见客户签名',
+`almebno` varchar(20) DEFAULT NULL COMMENT '联名单位会员号',
+`outcardno1` int(32) DEFAULT NULL COMMENT '转出卡号/账号',
+  
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`card_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `hxmotor`.`tt_loan` ADD COLUMN `bank_status` INT(8) NULL COMMENT '银行状态:1.征信待查;2.授信通过;3.征信退回;4.拒绝受理;5.已开卡;6.分期录入;7.分期退回' AFTER `estageOrderNo`; 
+
+
+-- 银行分期信息录入表
+CREATE TABLE `tt_bank_stage_apply` (
+  `card_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '记录ID',
+  `loan_id` bigint(14) NOT NULL  COMMENT '借款单ID',
+  `loan_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `name` varchar(30) DEFAULT NULL COMMENT '姓名',
+  `idCard` varchar(18) DEFAULT NULL COMMENT '身份证号',
+  `signMode` int(4) DEFAULT 2 COMMENT '签约方式：1.电子签约方式 2.影像上传方式',
+  `reczoneno` varchar(10) DEFAULT NULL COMMENT '业务发生地:1302',
+`carName` varchar(60) DEFAULT NULL COMMENT '车型名称',
+`carPrice` decimal(17,2) DEFAULT NULL COMMENT '车辆价格',
+`carType` int(1) DEFAULT NULL COMMENT '国产车还是进口车:0-国产车,1-进口车',
+`frameNo` varchar(40) DEFAULT NULL COMMENT '车架号',
+`engineNo` varchar(30) DEFAULT NULL COMMENT '发动机号',
+`carBrands` varchar(40) DEFAULT NULL COMMENT '品牌',
+`carSeries` varchar(60) DEFAULT NULL COMMENT '车系',
+`carSpecs` varchar(120) DEFAULT NULL COMMENT '车型',
+`systemCarPrice` decimal(17,2) DEFAULT NULL COMMENT '系统查询价',
+`businessModel` int(4) DEFAULT NULL COMMENT '业务模式',
+`dealer` varchar(120) DEFAULT NULL COMMENT '经销商名称',
+`dscode` varchar(30) DEFAULT NULL COMMENT '营销代码',
+`contractSfRatio` decimal(2,2) DEFAULT NULL COMMENT '收入还贷比',
+`repayPeriod` int(4)  DEFAULT NULL COMMENT '还款期限：3/6/9/12/18/24/36/48/60',
+`marketingArchivesNum` varchar(8) DEFAULT NULL COMMENT '营销档案编号',
+`commissionFeeRate` varchar(20) DEFAULT NULL COMMENT '分期手续费率：10% 传 10',
+`willResign` int(1) DEFAULT NULL COMMENT '是否重新签约',
+`sfMoney` decimal(17,2) DEFAULT NULL COMMENT '首付金额',
+`sfProportion` decimal(17,2) DEFAULT NULL COMMENT '首付比例',
+`monthincome` decimal(17,2) DEFAULT NULL COMMENT '还款人月均总收入',
+`monthhomeincome` decimal(17,2) DEFAULT NULL COMMENT '还款人家庭月均总收入',
+`property` decimal(17,2) DEFAULT NULL COMMENT '个人总资产',
+`houseArea` decimal(17,2) DEFAULT NULL COMMENT '现住房面积',
+`othdebtbal` decimal(17,2) DEFAULT NULL COMMENT '其他负债余额',
+`monrepayamt` decimal(17,2) DEFAULT NULL COMMENT '其他月还款额',
+`insureamt` decimal(17,2) DEFAULT NULL COMMENT '车损险投保金额',
+`loanMoney` decimal(17,2) DEFAULT NULL COMMENT '贷款金额合计',
+`actualLoanAmount` decimal(17,2) DEFAULT NULL COMMENT '关联人月收入',
+
+`encbno` varchar(60) DEFAULT NULL COMMENT '他项权证号',
+`mortname` varchar(200) DEFAULT NULL COMMENT '抵押品名称',
+`chnsname` varchar(30) DEFAULT NULL COMMENT '权属人姓名',
+`apprel` int(2) DEFAULT NULL COMMENT '申请人与抵押物权属人关系',
+`mortltype` varchar(3) DEFAULT NULL COMMENT '抵押品大类',
+`mortmtype` varchar(6) DEFAULT NULL COMMENT '抵押品中类',
+`mortstype` varchar(9) DEFAULT NULL COMMENT '抵押品小类',
+`mortvalue` decimal(17,2) DEFAULT NULL COMMENT '抵押品价值',
+`mortaddr` varchar(120) DEFAULT NULL COMMENT '抵押品地址',
+`encbregdate` varchar(10) DEFAULT NULL COMMENT '他项权证登记日期',
+`encbpreddate` varchar(10) DEFAULT NULL COMMENT '预计可办理他项权日期',
+`maxmortrate` decimal(17,2) DEFAULT NULL COMMENT '最高抵押率',
+`mortbegdate` varchar(10) DEFAULT NULL COMMENT '抵押起始日',
+`mortenddate` varchar(10) DEFAULT NULL COMMENT '抵押到期日',
+`mortcontrno` varchar(100) DEFAULT NULL COMMENT '抵押合同编号',
+`dbimpno` varchar(13) DEFAULT NULL COMMENT '质押品编号',
+`bailname` varchar(30) DEFAULT NULL COMMENT '保证人名称',
+`bailamount` decimal(17,2) DEFAULT NULL COMMENT '保证总金额',
+`bailaccno` varchar(19) DEFAULT NULL COMMENT '保证金账号',
+`bailcontno` varchar(100) DEFAULT NULL COMMENT '担保合同/担保承诺函编号',
+`marketId` varchar(30) DEFAULT NULL COMMENT '附加费营销档案编号',
+`financeCharge` decimal(17,2) DEFAULT NULL COMMENT '附加费',
+`guaranteeCode` varchar(30) DEFAULT NULL COMMENT '附加费担保合同/担保承诺函编号',
+`payMode` int(2) DEFAULT NULL COMMENT '支付模式',
+`payeeType` int(2) DEFAULT NULL COMMENT '收款对象类型',
+`cooperateAgencyCode` varchar(9) DEFAULT NULL COMMENT '合作机构CODE',
+`insuranceAgencyCode` varchar(9) DEFAULT NULL COMMENT '保险机构code',
+`recommendAgencyCode` varchar(9) DEFAULT NULL COMMENT '融资担保机构编号',
+`agencyReceiveMode1` int(2) DEFAULT NULL COMMENT '机构收款方类型1',
+`agencyReceiveAmt1` decimal(17,2) DEFAULT NULL COMMENT '第三方收款金额1',
+`agencyReceiveType1` int(2) DEFAULT NULL COMMENT '第三方机构收款金额1标志',
+`agencyReceiveMode2` int(2) DEFAULT NULL COMMENT '机构收款方类型2',
+`agencyReceiveAmt2` decimal(17,2) DEFAULT NULL COMMENT '第三方机构收款金额2',
+`agencyReceiveType2` int(2) DEFAULT NULL COMMENT '第三方机构收款金额2标志',
+
+  
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`card_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+--银行征信关联人表
+CREATE TABLE `tt_bank_credit_spouse` (
+  `spouse_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '关联人ID',
+  `loan_id` bigint(14) NOT NULL  COMMENT '借款单ID',
+  `userName` varchar(30) DEFAULT NULL COMMENT '姓名',
+  `idCard` varchar(18) DEFAULT NULL COMMENT '身份证号',
+  `phoneNum`  varchar(11) DEFAULT NULL COMMENT '手机号码',
+  `bankCardNo` varchar(20) DEFAULT NULL COMMENT '银行卡号',
+  `issueAuthority` varchar(60) DEFAULT NULL COMMENT '身份证签发机关',
+  `startDate` varchar(10) DEFAULT NULL COMMENT '证件有限期起始日',
+  `endDate` varchar(10) DEFAULT NULL COMMENT '证件有限期截止日',
+  `familyAddress` varchar(120) DEFAULT NULL COMMENT '住宅地址',
+  `userRelationship` int(1) DEFAULT NULL COMMENT '与申请人关系',
+  `isQueryCredit` int(1) DEFAULT NULL COMMENT '是否查征信',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`spouse_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 抵押品分类表
+CREATE TABLE `tm_bank_mort_type` (
+  `type_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '抵押类别ID',
+  `mort_type`  varchar(20) DEFAULT NULL COMMENT '抵押品类别：抵押品大类(ltype)、抵押品中类(mtype)、抵押品小类(stype)',
+  `mort_code`  varchar(20) DEFAULT NULL COMMENT '抵押品分类编码',
+  `parent_code` varchar(20) DEFAULT NULL COMMENT '上级抵押品分类编码',
+  `mort_name` varchar(150) DEFAULT NULL COMMENT '抵押品名称',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`type_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 银行e分期相关通知信息表
+
+CREATE TABLE `tt_bank_esystem_notify` (
+  `notify_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '通知ID',
+  `order_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `trans_type` int(4) DEFAULT NULL COMMENT '流转类型',
+  `opinion` varchar(500) DEFAULT NULL COMMENT '意见',
+  `user_name` varchar(60) DEFAULT NULL COMMENT '姓名：补查关联人通知时有此参数',
+  `id_card` varchar(18) DEFAULT NULL COMMENT '身份证号：补查关联人通知时有此参数',
+  `notify_msg` text COMMENT '通知json信息',
+  `task_id` int(11) DEFAULT NULL COMMENT '任务id，此taskId请在相关补录接口中传回，对应e分期中一条补录任务',
+  `card_no` varchar(60) DEFAULT NULL COMMENT '卡号',
+  `loan_date` varchar(30) DEFAULT NULL COMMENT '放款日期',
+  `loan_stage_date` varchar(30) DEFAULT NULL COMMENT '分期日期',
+  `recstat` varchar(60) DEFAULT NULL COMMENT 'BAM放款状态:73放款成功 74放款失败 61开户成功 62开户失败',
+  `loan_amount` decimal(17,2) DEFAULT NULL COMMENT '放款金额',
+  `loan_account` varchar(30) DEFAULT NULL COMMENT '放款账户',
+  `loan_flag` int(1) DEFAULT NULL COMMENT '金额标志：1-车贷,2-附加费',
+  `firstamt` decimal(17,2) DEFAULT NULL COMMENT '本金首付',
+  `eachamt` decimal(17,2) DEFAULT NULL COMMENT '本金每期',
+  `feeamt` decimal(17,2) DEFAULT NULL COMMENT '手续费总额',
+  `eachpfee` decimal(17,2) DEFAULT NULL COMMENT '每期手续费',
+  `firstpfee` decimal(17,2) DEFAULT NULL COMMENT '首期手续费',
+  `eachdate` int(3) DEFAULT NULL COMMENT '每期扣款日',
+  `nextdate` varchar(20) DEFAULT NULL COMMENT '下次扣款日期',
+  `remark` varchar(100) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`notify_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8
+
+
+-- 银行材料物料编码
+CREATE TABLE `tm_bank_material` (
+  `material_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '材料ID',
+  `material_code`  varchar(30) DEFAULT NULL COMMENT '材料编码',
+  `material_name`  varchar(80) DEFAULT NULL COMMENT '材料名称',
+  `quantity` varchar(3) DEFAULT NULL COMMENT '上传限制数量',
+  `show_method` varchar(2) DEFAULT NULL COMMENT '材料显示方式 (0:图片 1:视频)',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`material_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--分期材料补录表
+CREATE TABLE `tm_bank_stage_addmaterial` (
+  `material_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '材料ID',
+  `material_type` varchar(2) DEFAULT NULL COMMENT '分期材料补录类别：0覆盖、1增加',
+  `order_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `material_code`  varchar(30) DEFAULT NULL COMMENT '材料编码',
+  `material_name`  varchar(80) DEFAULT NULL COMMENT '材料名称',
+  `taskId` int(10) DEFAULT NULL COMMENT '分期材料任务ID',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`material_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 车抵贷线索表
+CREATE TABLE `cdd_clue_customer` (
+  `clue_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '线索ID',
+  `customer_name` varchar(60) DEFAULT NULL COMMENT '客户姓名',
+  `mobile_no`  varchar(20) DEFAULT NULL COMMENT '手机号码',
+  `gender`  varchar(8) DEFAULT NULL COMMENT '性别',
+  `city`  varchar(30) DEFAULT NULL COMMENT '所属城市',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`clue_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- 分期材料补录任务表  2019-07-26
+CREATE TABLE `tm_bank_stage_task` (
+  `add_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '补录主键ID',
+  `material_type` varchar(2) DEFAULT NULL COMMENT '分期材料补录类别：0覆盖、1增加',
+  `order_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `taskId` int(10) DEFAULT NULL COMMENT '分期材料任务ID',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`add_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `tt_bank_loan_result` (
+  `result_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '放款通知ID',
+  `order_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `card_no` varchar(60) DEFAULT NULL COMMENT '卡号',
+  `loan_date` varchar(60) DEFAULT NULL COMMENT '放款日期',
+	`loan_stage_date` varchar(60) DEFAULT NULL COMMENT '分期日期',
+  `recstat` varchar(60) DEFAULT NULL COMMENT 'BAM放款状态:73放款成功 74放款失败 61开户成功 62开户失败',
+	`recstat_msg` varchar(60) DEFAULT NULL COMMENT 'BAM放款信息:如,放款成功',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`result_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+-- 银行放款信息明细表
+CREATE TABLE `tt_bank_loan_info_detail` (
+  `detail_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '放款信息明细ID',
+  `result_id` bigint(14)  unsigned NOT NULL COMMENT '放款通知ID',
+  `order_no` varchar(60) DEFAULT NULL COMMENT '借款订单号',
+  `loan_amount` decimal(17,2) DEFAULT NULL COMMENT '放款金额',
+  `loan_account` varchar(30) DEFAULT NULL COMMENT '放款账户',
+  `loan_flag` int(1) DEFAULT NULL COMMENT '金额标志：1-车贷,2-附加费',
+  `firstamt` decimal(17,2) DEFAULT NULL COMMENT '本金首付',
+  `eachamt` decimal(17,2) DEFAULT NULL COMMENT '本金每期',
+  `feeamt` decimal(17,2) DEFAULT NULL COMMENT '手续费总额',
+  `eachpfee` decimal(17,2) DEFAULT NULL COMMENT '每期手续费',
+  `firstpfee` decimal(17,2) DEFAULT NULL COMMENT '首期手续费',
+  `eachdate` int(3) DEFAULT NULL COMMENT '每期扣款日',
+  `nextdate` varchar(20) DEFAULT NULL COMMENT '下次扣款日期',
+  `workdate` varchar(20) DEFAULT NULL COMMENT '申请日期',
+  `trxspot` varchar(120) DEFAULT NULL COMMENT '交易场所',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`detail_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+--财务计算放款 业务员提成公式  默认这2个字段为0，防止出错
+ALTER TABLE `hxmotor`.`tm_product_price` ADD COLUMN `business_commission` DECIMAL(6,2) NULL COMMENT '业务员提成点位' AFTER `end_amount`, ADD COLUMN `commission_amount` DECIMAL(10,2) NULL COMMENT '业务员提成金额' AFTER `business_commission`;
+ALTER TABLE `hxmotor`.`tm_product_price_old` ADD COLUMN `business_commission` DECIMAL(6,2) NULL COMMENT '业务员提成点位' AFTER `end_amount`, ADD COLUMN `commission_amount` DECIMAL(10,2) NULL COMMENT '业务员提成金额' AFTER `business_commission`;
+
+update tm_product_price  set business_commission=0.5,commission_amount=300 where product_code = 'DIRECT'
+and business_type = 20501001;
+
+update tm_product_price  set business_commission=1,commission_amount=100 where product_code = 'DIRECT'
+and business_type = 20501002;
+-- 出账单表新增字段
+ALTER TABLE `hxmotor`.`tt_finance_account` ADD COLUMN `income_date` DATETIME NULL COMMENT '进件时间' AFTER `dif_handle_date`, ADD COLUMN `new_loan_amount` DECIMAL(10,2) NULL COMMENT '放款时间：2019.8.1号进件后' AFTER `income_date`, ADD COLUMN `business_commission` DECIMAL(6,2) NULL COMMENT '业务员提成点位' AFTER `new_loan_amount`, ADD COLUMN `commission_amount` DECIMAL(8,2) NULL COMMENT '业务员提成金额' AFTER `business_commission`, ADD COLUMN `business_salary` DECIMAL(8,2) NULL COMMENT '业务提成薪资金额' AFTER `commission_amount`; 
+ALTER TABLE `hxmotor`.`tt_finance_account` CHANGE `business_commission` `business_commission` DECIMAL(6,2) DEFAULT 0 NULL COMMENT '业务员提成点位', CHANGE `commission_amount` `commission_amount` DECIMAL(8,2) DEFAULT 0 NULL COMMENT '业务员提成金额', CHANGE `business_salary` `business_salary` DECIMAL(8,2) DEFAULT 0 NULL COMMENT '业务提成薪资金额'; 
+-- 更新进件时间
+update tt_finance_account a set a.income_date = (select t.APPLY_DATE from tt_loan t where t.loan_id = a.loan_id);
+
+-- 工行分期进件接口表添加字段关联人1、关联人2资料
+ALTER TABLE `hxmotor`.`tt_bank_stage_apply` ADD COLUMN `spouse1_name` VARCHAR(30) NULL COMMENT '关联人1姓名' AFTER `agencyReceiveType2`, ADD COLUMN `spouse1_id_card` VARCHAR(18) NULL COMMENT '关联人1身份证号码' AFTER `spouse1_name`, ADD COLUMN `spouse2_name` VARCHAR(30) NULL COMMENT '关联人2姓名' AFTER `spouse1_id_card`, ADD COLUMN `spouse2_id_card` VARCHAR(18) NULL COMMENT '关联人2身份证号码' AFTER `spouse2_name`; 
+
+-- 车抵贷营销二维码生成
+CREATE TABLE `cdd_source_qr_code` (
+  `source_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '渠道ID',
+  `source_name` varchar(80) DEFAULT NULL COMMENT '渠道名称',
+  `qr_code`  varchar(200) DEFAULT NULL COMMENT '二维码链接地址',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`source_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2019001 DEFAULT CHARSET=utf8;
+
+ALTER TABLE `hxmotor`.`cdd_clue_customer` ADD COLUMN `source_id` BIGINT(14) NULL COMMENT '来源ID' AFTER `city`, ADD COLUMN `source_name` VARCHAR(120) NULL COMMENT '来源渠道' AFTER `sourc_id`; 
+			
+
+-- 行政提醒功能		xz_remind_syq_param
+CREATE TABLE `xz_remind_param` (
+  `param_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '参数ID',
+  `remind_day` int(2) DEFAULT NULL COMMENT '提醒天数：30、15、10、7',
+  `mobile_phone` varchar(60) DEFAULT NULL COMMENT '提醒手机号',
+  `dd_id` varchar(100) DEFAULT NULL COMMENT '提醒人钉钉ID',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`param_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;			
+			
+-- 分期信息录入添加状态
+ALTER TABLE `hxmotor`.`tt_bank_stage_apply` ADD COLUMN `status` INT(8) NULL COMMENT '状态：分期退回、分期录入、分期已提交' AFTER `spouse2_id_card`;	
+
+-- 开卡信息录入添加状态
+ALTER TABLE `hxmotor`.`tt_bank_card_apply` ADD COLUMN `status` INT(8) NULL COMMENT '状态：分期退回、分期录入、分期已提交' AFTER `outcardno1`;
+
+
+--工行接口通知表新增字段 接口标识和贷后清单地址  2019-08-27
+ALTER TABLE `hxmotor`.`tt_bank_esystem_notify` ADD COLUMN `busi_code` VARCHAR(30) NULL COMMENT '接口标识:贷前相关通知接口为1004,贷后相关通知接口为1016' AFTER `notify_id`, ADD COLUMN `record_file_url` VARCHAR(300) NULL COMMENT '贷后清单文件地址' AFTER `opinion`; 
+
+
+-- E分期贷后清单表（待创建）  2019-08-27
+CREATE TABLE `tt_bank_loan_overdue_list` (
+  `list_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '参数ID',
+  `remind_day` int(2) DEFAULT NULL COMMENT '提醒天数：30、15、10、7',
+  `mobile_phone` varchar(60) DEFAULT NULL COMMENT '提醒手机号',
+  `dd_id` varchar(100) DEFAULT NULL COMMENT '提醒人钉钉ID',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`list_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;	
+
+
+--固定资产表新增增加方式字段  折旧计算方法
+ALTER TABLE `hxmotor`.`xz_fixed_assets` ADD COLUMN `add_method` INT(8) NULL COMMENT '增加方式：直接购入、调入' AFTER `assets_type`; 
+
+CREATE TABLE `xz_fixed_depreciation_cal` (
+  `depreciation_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '折旧参数ID',
+  `fixed_type` int(8) DEFAULT NULL COMMENT '资产类型：办公设备、运输设备、专用设备',
+  `fixed_name` varchar(60) DEFAULT NULL COMMENT '资产名称',
+  `use_month` int(2) DEFAULT 0 COMMENT '使用月份',
+  `salvage_rate` decimal(5,2) DEFAULT 0 COMMENT '净残值率',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`depreciation_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;	
+
+INSERT INTO `hxmotor`.`xz_fixed_depreciation_cal` (`depreciation_id`, `fixed_type`, `fixed_name`, `use_month`, `salvage_rate`, `status`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('1', '20901001', '办公设备', '36', '0.05', '10011001', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`xz_fixed_depreciation_cal` (`depreciation_id`, `fixed_type`, `fixed_name`, `use_month`, `salvage_rate`, `status`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('2', '20901002', '运输设备', '60', '0.05', '10011001', NULL, NULL, NULL, NULL, NULL, '1');
+INSERT INTO `hxmotor`.`xz_fixed_depreciation_cal` (`depreciation_id`, `fixed_type`, `fixed_name`, `use_month`, `salvage_rate`, `status`, `remark`, `create_date`, `create_by`, `update_date`, `update_by`, `ver`) VALUES ('3', '20901003', '专用设备', '36', '0.05', '10011001', NULL, NULL, NULL, NULL, NULL, '1');
+
+
+--行政人事档案需求变更新增表 2019-08-29
+
+-- 部门表
+CREATE TABLE `xz_dept` (
+  `dept_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '部门ID',
+	`parent_id` bigint(14) unsigned NOT NULL DEFAULT 0 COMMENT '上级部门ID：一级部门不需要维护',
+  `dept_type` int(8) DEFAULT NULL COMMENT '部门类型：一级部门、二级部门',
+  `dept_name` varchar(60) DEFAULT NULL COMMENT '部门名称',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`dept_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;	
+
+--职位表
+CREATE TABLE `xz_position` (
+  `position_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '职位ID',
+  `position_name` varchar(60) DEFAULT NULL COMMENT '职位名称',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`position_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;	
+
+CREATE TABLE `xz_work_experience` (
+  `work_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '工作经历ID',
+  `emp_id` bigint(14) unsigned NOT NULL COMMENT '员工ID：对应员工表',
+  `start_date` datetime DEFAULT NULL COMMENT '工作开始时间',
+  `end_date` datetime DEFAULT NULL COMMENT '工作结束时间',
+  `position` varchar(60) DEFAULT NULL COMMENT '职务',
+  `salary` varchar(60) DEFAULT NULL COMMENT '薪资',
+  `leave_reason` varchar(120) DEFAULT NULL COMMENT '离职原因',
+  `voucher` varchar(60) DEFAULT NULL COMMENT '证明人',
+  `link_mobile` varchar(60) DEFAULT NULL COMMENT '联系电话',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`work_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='人事工作经历表';
+
+CREATE TABLE `xz_edu_situation` (
+  `edu_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '教育情况ID',
+  `emp_id` bigint(14) unsigned NOT NULL COMMENT '员工ID：对应员工表',
+  `start_date` datetime DEFAULT NULL COMMENT '就读开始时间',
+  `end_date` datetime DEFAULT NULL COMMENT '就读结束时间',
+  `school_name` varchar(180) DEFAULT NULL COMMENT '学校名称',
+  `major` varchar(60) DEFAULT NULL COMMENT '所学专业',
+  `link_mobile` varchar(60) DEFAULT NULL COMMENT '毕业状况',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`edu_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='教育情况表';
+
+CREATE TABLE `xz_family_members` (
+  `family_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '家庭ID',
+  `emp_id` bigint(14) unsigned NOT NULL COMMENT '员工ID：对应员工表',
+  `relation` varchar(60) DEFAULT NULL COMMENT '称谓',
+  `members_name` varchar(60) DEFAULT NULL COMMENT '姓名',
+  `family_address` varchar(160) DEFAULT NULL COMMENT '家庭地址/工作单位',
+  `position` varchar(60) DEFAULT NULL COMMENT '职务',
+  `family_mobile` varchar(60) DEFAULT NULL COMMENT '家庭电话',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`family_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='家庭成员情况';
+
+CREATE TABLE `xz_labor_contract` (
+  `contract_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '合同ID',
+  `emp_id` bigint(14) unsigned NOT NULL COMMENT '员工ID：对应员工表',
+  `start_date` datetime DEFAULT NULL COMMENT '合同开始时间',
+  `end_date` datetime DEFAULT NULL COMMENT '合同结束时间',
+  `contract_period` int(8) DEFAULT NULL COMMENT '合同年限:3年、5年、无固定期限',
+  `contract_type` int(8) DEFAULT NULL COMMENT '合同类型:初签、续签',
+  `status` int(8) DEFAULT NULL COMMENT '合同状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`contract_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='人事劳动合同表';
+
+CREATE TABLE `xz_person_change` (
+  `chg_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '异动ID',
+  `emp_id` bigint(14) unsigned NOT NULL COMMENT '员工ID：对应员工表',
+  `chg_date` datetime DEFAULT NULL COMMENT '变更时间',
+  `chg_info` varchar(200) DEFAULT NULL COMMENT '变动信息',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`chg_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='人事信息异动表';
+
+
+ALTER TABLE `hxmotor`.`xz_employee_info` ADD COLUMN `is_buy_social` INT(8) NULL COMMENT '是否购买社保' AFTER `resignation_time`, ADD COLUMN `social_start_date` DATETIME NULL COMMENT '社保购买时间' AFTER `is_buy_social`, ADD COLUMN `social_end_date` DATETIME NULL COMMENT '社保停缴时间' AFTER `social_start_date`, ADD COLUMN `is_bug_gjj` INT(8) NULL COMMENT '是否购买公积金' AFTER `social_end_date`, ADD COLUMN `gjj_start_date` DATETIME NULL COMMENT '公积金购买时间' AFTER `is_bug_gjj`, ADD COLUMN `gjj_end_date` DATETIME NULL COMMENT '公积金停缴时间' AFTER `gjj_start_date`; 
+
+ALTER TABLE `hxmotor`.`xz_employee_info` ADD COLUMN `dept_id` BIGINT(14) NULL COMMENT '部门ID' AFTER `employee_id`, ADD COLUMN `postion_id` BIGINT(14) NULL COMMENT '职位ID' AFTER `dept_id`; 
+
+ALTER TABLE `hxmotor`.`xz_employee_info` ADD COLUMN `person_img` VARCHAR(150) NULL COMMENT '个人图像url' AFTER `gjj_end_date`; 
+
+ALTER TABLE `hxmotor`.`xz_employee_info` ADD COLUMN `marrage_state` INT(8) NULL COMMENT '婚姻状况：未婚、已婚、离异' AFTER `person_img`, ADD COLUMN `birth_state` INT(8) NULL COMMENT '生育状况：未育、已育' AFTER `marrage_state`, ADD COLUMN `pos_type` INT(8) NULL COMMENT '岗位类别：前台、中后台' AFTER `birth_state`, ADD COLUMN `agent_time` DATETIME NULL COMMENT '代理时间' AFTER `pos_type`;
+
+
+
+
+
+
+-- 大数据查询统计
+select a.GROUP_CODE,b.COMPANY_NAME,count(1) from tt_br_report a,tm_company b where 
+a.GROUP_CODE =  b.COMPANY_CODE
+and a.`STATUS` = 1 
+and a.REPORRT_NO is not null
+and date_format(a.CREATE_DATE,'%Y-%m-%d') >= '2019-08-01'
+and date_format(a.CREATE_DATE,'%Y-%m-%d') <= '2019-08-31'
+group by a.GROUP_CODE,b.COMPANY_NAME
+order by count(1) desc;
+
+
+-- tm_bank_material_eshow  银行文件显示
+
+
+
+-- 车抵贷附件表  2019-09-12
+CREATE TABLE `cdd_fs_fileupload` (
+  `ATTACH_ID` bigint(16) NOT NULL AUTO_INCREMENT COMMENT '附件ID',
+  `FILE_ID` varchar(200) DEFAULT NULL COMMENT '文件ID',
+  `FILE_URL` varchar(200) DEFAULT NULL COMMENT '附件地址',
+  `FILE_NAME` text COMMENT '附件名称',
+  `FILE_SIZE` decimal(16,0) DEFAULT NULL COMMENT '文件大小',
+  `FILE_TYPE` varchar(60) DEFAULT NULL COMMENT '文件类型',
+  `FILE_KIND` varchar(20) DEFAULT NULL COMMENT '文件种类',
+  `BUSINESS_ID` decimal(16,0) DEFAULT NULL COMMENT '业务ID',
+  `BUSINESS_TYPE` decimal(8,0) DEFAULT NULL COMMENT '业务类型',
+  `STATUS` decimal(8,0) DEFAULT NULL COMMENT '状态',
+  `CREATE_DATE` datetime DEFAULT NULL,
+  `CREATE_BY` decimal(16,0) DEFAULT NULL,
+  `UPDATE_DATE` datetime DEFAULT NULL,
+  `UPDATE_BY` decimal(16,0) DEFAULT NULL,
+  `VER` int(8) DEFAULT '1',
+  PRIMARY KEY (`ATTACH_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000000000 DEFAULT CHARSET=utf8 COMMENT='车抵贷附件表';
+
+CREATE TABLE `cdd_material` (
+  `material_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '车抵贷资料录入ID',
+  `material_code` varchar(30) DEFAULT NULL COMMENT '材料编码',
+  `material_name` varchar(80) DEFAULT NULL COMMENT '材料名称',
+  `material_type` varchar(10) DEFAULT NULL COMMENT '材料类型',
+  `quantity` int(3) DEFAULT NULL COMMENT '材料限制数量',
+  `order_num` int(3) DEFAULT NULL COMMENT '材料排序',
+  `status` int(8) DEFAULT NULL COMMENT '状态:有效、无效',
+  `remark` varchar(120) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`material_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='车抵贷资料类别表';
+
+-- 车抵贷进件表
+CREATE TABLE `cdd_loan` (
+  `loan_id` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '申请单ID',
+  `loan_no` varchar(30) DEFAULT NULL COMMENT '借款单号',
+  `apply_date` datetime DEFAULT NULL COMMENT '进件日期',
+  `customer_name` varchar(80) DEFAULT NULL COMMENT '客户名称',
+  `id_card` varchar(30) DEFAULT NULL COMMENT '身份证号码',
+  `mobile_phone` varchar(30) DEFAULT NULL COMMENT '手机号码',
+  `sex` varchar(10) DEFAULT NULL COMMENT '性别',
+  `age` int(3) DEFAULT NULL COMMENT '年龄',
+  `nation` varchar(10) DEFAULT NULL COMMENT '名族',
+  `birth` varchar(30) DEFAULT NULL COMMENT '出生日期',
+	`marriage_status` varchar(30) DEFAULT NULL COMMENT '婚姻状况',
+  `license_no` varchar(30) DEFAULT NULL COMMENT '车牌号码',
+  `vehicle_brand` varchar(150) DEFAULT NULL COMMENT '车辆品牌',
+  `assessment_amount` decimal(12,2) DEFAULT NULL COMMENT '评估金额',
+  `apply_amount` decimal(12,2) DEFAULT NULL COMMENT '申请金额',
+  `loan_ratio` decimal(8,2) DEFAULT NULL COMMENT '贷款比例',
+  `source_name` varchar(80) DEFAULT NULL COMMENT '渠道：业务员、代理商名字等',
+  `group_code` varchar(50) DEFAULT NULL COMMENT '分公司代码',
+  `group_name` varchar(80) DEFAULT NULL COMMENT '分公司名称',
+  `gps_quantity` varchar(30) DEFAULT NULL COMMENT 'GPS个数：3个明细',
+  `is_reconsider` int(8) unsigned DEFAULT '12781002' COMMENT '是否复议',
+  `issueAuthority` varchar(60) DEFAULT NULL COMMENT '身份证签发机关',
+  `startDate` varchar(10) DEFAULT NULL COMMENT '证件有限期起始日',
+  `endDate` varchar(10) DEFAULT NULL COMMENT '证件有限期截止日',
+  `familyAddress` varchar(150) DEFAULT NULL COMMENT '住宅地址',
+  `status` int(8) DEFAULT NULL COMMENT '单据状态:待提交、业务内勤、业务主管、风控初审(CA)、线下风控、风控复核（CA）、风控经理、总经理、副董事长、董事长',
+   remark  varchar(150) DEFAULT NULL COMMENT '备注',
+  `create_date` datetime DEFAULT NULL,
+  `create_by` bigint(14) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` bigint(14) DEFAULT NULL,
+  `ver` int(8) DEFAULT '1' COMMENT '版本',
+  PRIMARY KEY (`loan_id`) USING BTREE,
+  KEY `index_cdd_loan_create` (`create_by`) USING BTREE,
+  KEY `index_cdd_loan_phone` (`mobile_phone`),
+  KEY `index_cdd_loan_idno` (`id_card`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+-- 车抵贷审核记录表
+CREATE TABLE `cdd_loan_appauthitem` (
+  `AUTH_ID` bigint(14) unsigned NOT NULL AUTO_INCREMENT COMMENT '审核记录ID',
+  `APPROVAL_PERSON` varchar(30) DEFAULT NULL COMMENT '审核人',
+  `APPROVAL_POSITION` varchar(80) DEFAULT NULL COMMENT '审核岗位',
+  `APPROVAL_RESULT` varchar(30) DEFAULT NULL COMMENT '审核结果',
+  `APPROVAL_DATE` datetime DEFAULT NULL COMMENT '审核日期',
+  `REMARK` text COMMENT '备注',
+  `CREATE_DATE` datetime DEFAULT NULL,
+  `CREATE_BY` bigint(14) DEFAULT NULL,
+  `UPDATE_DATE` datetime DEFAULT NULL,
+  `UPDATE_BY` bigint(14) DEFAULT NULL,
+  `VER` int(8) DEFAULT '1' COMMENT '版本',
+  `LOAN_ID` bigint(14) DEFAULT NULL COMMENT '申请单ID',
+  PRIMARY KEY (`AUTH_ID`) USING BTREE,
+  KEY `idx_cdd_auth_loan_id` (`LOAN_ID`),
+  KEY `idx_cdd_auth_loan_create_by` (`CREATE_BY`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='车抵贷申请单审核记录表';
+
+
+
+
+-- 车抵贷担保人表
+CREATE TABLE `cdd_guarantee_person` (
+  `guarantee_id` bigint(14) NOT NULL AUTO_INCREMENT COMMENT '担保人ID',
+  `guarantee_customer_name` varchar(80) DEFAULT NULL COMMENT '担保人姓名',
+  `guarantee_sex` varchar(10) DEFAULT NULL COMMENT '性别',
+  `guarantee_age` int(3) DEFAULT NULL COMMENT '年龄',
+  `guarantee_nation` varchar(10) DEFAULT NULL COMMENT '名族',
+  `guarantee_birth` varchar(30) DEFAULT NULL COMMENT '出生日期',
+  `issueAuthority` varchar(60) DEFAULT NULL COMMENT '身份证签发机关',
+  `startDate` varchar(10) DEFAULT NULL COMMENT '证件有限期起始日',
+  `endDate` varchar(10) DEFAULT NULL COMMENT '证件有限期截止日',
+  `familyAddress` varchar(150) DEFAULT NULL COMMENT '住宅地址',
+  `guarantee_apply_relation` int(8) DEFAULT NULL COMMENT '担保人与承租人关系',
+  `guarantee_id_number` varchar(30) DEFAULT NULL COMMENT '担保人身份证号码',
+  `guarantee_customer_phone` varchar(30) DEFAULT NULL COMMENT '担保人手机号码',
+  `guarantee_marital_status` int(8) DEFAULT NULL COMMENT '担保人婚姻状况',
+  `guarantee_account_type` int(8) DEFAULT NULL COMMENT '担保人户口类别',
+  `guarantee_work_unit` varchar(120) DEFAULT NULL COMMENT '担保人单位名称',
+  `guarantee_work_position` varchar(80) DEFAULT NULL COMMENT '担保人职务',
+  `guarantee_work_mobile` varchar(30) DEFAULT NULL COMMENT '担保人单位电话',
+  `guarantee_work_salary` varchar(40) DEFAULT NULL COMMENT '担保人税后月薪',
+  `guarantee_residence_time` int(8) DEFAULT NULL COMMENT '担保人居住入住年限',
+  `guarantee_living_condition` int(8) DEFAULT NULL COMMENT '担保人居住状况',
+  `guarantee_house_province` int(14) DEFAULT NULL COMMENT '担保人现居地省份',
+  `guarantee_house_city` int(14) DEFAULT NULL COMMENT '担保人现居地城市',
+  `guarantee_house_country` int(14) DEFAULT NULL COMMENT '担保人现居地县/区',
+  `guarantee_house_address` varchar(255) DEFAULT NULL COMMENT '担保人现居地详细地址',
+  `create_date` datetime DEFAULT NULL COMMENT '创建日期',
+  `create_by` decimal(14,0) DEFAULT NULL COMMENT '创建人',
+  `update_date` datetime DEFAULT NULL COMMENT '更新日期',
+  `update_by` decimal(14,0) DEFAULT NULL COMMENT '更新人',
+  `ver` int(8) DEFAULT '1' COMMENT '版本号',
+  `loan_id` bigint(14) DEFAULT NULL COMMENT '申请表ID',
+  PRIMARY KEY (`guarantee_id`),
+  KEY `idx_cdd_guarantee_loan_id` (`loan_id`) USING BTREE,
+  KEY `idx_cdd_guarantee_idno` (`guarantee_id_number`),
+  KEY `idx_cdd_guarantee_phone` (`guarantee_customer_phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='车抵贷担保人表';
+
+
+
+
+
+
+
+		
+			

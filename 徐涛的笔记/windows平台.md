@@ -1,0 +1,393 @@
+# 教程
+[toc]
+
+---
+
+
+## windows平台的正确食用
+
+### windows下开机自启启动文件夹程序运行[-链接地址](http://www.2016win10.com/w10/6023.html)
+#### win10
+> 1. win10   C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp  往这里面添加程序
+> 2.win10 注册表 计算机\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+![](_v_images/20190820215445262_30455.png)
+
+#### win7
+> 启动文件夹 C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+### 镜像恢复工具
+
+1. 硬盘本地恢复工具
+   
+   1.     
+
+2. usb PE工具（优点:功能全强大，没有广告绑定，自动引导恢复）
+
+   >[U盘魔术师-点击进入官网](http://www.usbrun.com/ )
+
+### 系统镜像
+
+> 装机多年现放出最好用的系统，提示现在好多最新主板已经不再支持win7了自行百度。
+
++ win10 [专注于Win10 - 更专注,才更出色](http://iwin10.net/ )  -强烈推荐自带驱动和各种优化
++ win7  [吻妻系统/专注于Win7](http://www.newxitong.com/ )  -强烈推荐自带驱动和各种优化
++ 原版镜像 [MSDN, 我告诉你](https://msdn.itellyou.cn/ ) 
++ 系统之家 也可以下但不推荐，绑定主页，各种绑定软件
+
+### 镜像正版破解
+
+> [激活所有版本KMS](https://www.lanzous.com/i36ro3i) -关闭杀毒软件 其他同类软件自行百度 
+
+### 软件推荐
+#### 生产办公类
++ VNote 很好用的markdown工具让你爱上写笔记 
+#### 影音媒体类
++ 好用录屏工具绿色破解版apowerrec[下载地址](https://www.lanzous.com/i5r9lre%0A)
++ ps cs6 [下载地址](http://www.downza.cn/soft/27536.html)
+
+
+#### 旁门左道小软件
++ [抖音采集器-蓝奏下载地址](https://www.lanzous.com/i5r6m3i%0A) [原帖](https://www.52pojie.cn/thread-1012318-1-1.html)
+
+
+
+
+
+---
+
+## chrome浏览器插件
+<img src="https://s2.ax1x.com/2019/08/16/mVTlFK.png" alt="mVTlFK.png" border="0" style="width:50%;"/>
+
+> 浏览器推荐使用cent百分浏览器 和chrome一样规规矩矩但是功能更加丰富
+>> 扔几个用到的网址  
+> + [根据chrome插件id下载插件-网址](https://chrome-extension-downloader.com/) 
+> + [crx4chrome插件下载地址](https://www.crx4chrome.com/)
++ [极简图床_v2.25.0](https://www.lanzous.com/i1wu5yh) 
+    > 用于捕获网页上的图片，自定义选择，并可以打包从本地下载，非再次请求
++ [浏览器跨域插件](https://www.lanzous.com/i1yv65c)
+    > 解封浏览器所有跨域现状，web开发者使用  
++ [广告净化器](https://www.lanzous.com/i5ib6hc)
+    > 上网必备插件 过滤各种网页广告 已经爱奇艺优酷等视频等待广告
++ [Tampermonkey油猴脚本安装器](https://www.lanzous.com/i5ibcde) 
+    > 配合油猴脚本实现需要强大功能，这个chrome插件的另外一番天地。利用可以它可以解除百度网盘下载，解除禁止网页复制等，相当于在网页执行你自定义js功能，十分强大。网页上js能实现的它都能实现。-[油猴脚本库地址greasyfork](https://greasyfork.org/zh-CN)
++ [代理插件Proxy-SwitchyOmega](https://www.lanzous.com/i5icaxi)
+    > 浏览器控制代理的插件
++ [开发者api接口调用测试插件ApiDebug/和postman功能一样](https://www.lanzous.com/i5ic8zi)
++ [截整个页面包括往下的长截图fireshot](https://www.lanzous.com/i1zmfoh)
+    > 同样的功能还可以利用FastStone Capture截软件实现。[FastStone Captur绿色版下载](https://www.lanzous.com/i1v9qfc) 这款软件十分强大，可以截图，拼图，标注，录屏等，作者经常用到它。
++ [二维码生成器Quick QR8.02](https://www.lanzous.com/i5icdad)  
+    > 可生成浏览器当前页面的网址 手机扫描即可访问，也可以自定义二维码内容。
+> 研究各大浏览器及插件许久欢迎网友加QQ交流。火狐浏览器参考-《奔跑的奶酪》 《阳光盒子》 博客
+
+
+
+<html>
+<!--在这里插入内容-->
+<!-- 来必力City版安装代码 -->
+<div id="lv-container" data-id="city" data-uid="MTAyMC80NTk2My8yMjQ3NA==">
+	<script type="text/javascript">
+   (function(d, s) {
+       var j, e = d.getElementsByTagName(s)[0];
+
+       if (typeof LivereTower === 'function') { return; }
+
+       j = d.createElement(s);
+       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+       j.async = true;
+
+       e.parentNode.insertBefore(j, e);
+   })(document, 'script');
+	</script>
+<noscript> 为正常使用来必力评论功能请激活JavaScript</noscript>
+</div>
+<!-- City版安装代码已完成 -->
+</html>
+
+
+
+## chrome浏览器插件使用心得
+### 油猴脚本教程[链接](https://www.cnblogs.com/h2zZhou/p/9340260.html)
+[Violentmonkey](https://github.com/violentmonkey/violentmonkey/releases/download/v2.6.3/violentmonkey-2.6.3.crx)-暴力猴
+[Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo)-油猴-篡改猴
+> 自己写的脚本
+
+
+```js
+
+// ==UserScript==
+// @icon            http://weibo.com/favicon.ico
+// @name            下载图片
+// @namespace       [url=mailto:1649991905@qq.com]1649991905@qq.com[/url]
+// @author          猎隼丶止戈
+// @description     下载微博视频
+// @match           *://*/*
+// @require         https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js
+// @require         https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js
+// @require         https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js
+// @version         0.0.1
+// @grant           GM_addStyle
+// ==/UserScript==
+(function () {
+    'use strict';
+    $($("html")[0]).prepend("<button id='startYouHouFunId' style='position: fixed;top: 10px; left: 160px;z-index: 10000;'>下载图片</button>");//创建出发按钮
+    $("#startYouHouFunId").on("click",function(){
+        console.log("油猴脚本开始执行...");
+        var imgs=$(" img");
+        var imgsrc=[];
+        var imgNum=0;
+        for(var i=0;i<imgs.length;i++){
+            imgNum++;
+            if(imgNum==3){
+                console.log(imgs[i]);
+                imgsrc.push($(imgs[i]).attr("src"));
+                imgNum=0;
+
+               }
+
+
+        }
+         // var curPageUrl = window.document.location.href;
+       // var rootPath = curPageUrl.split("//")[0] + curPageUrl.split("//")[1].split("/")[0]+ curPageUrl.split("//")[1].split("/")[1];
+      //  console.log(rootPath);
+        console.log(imgsrc);
+        packageImages(imgsrc);
+
+    })
+
+
+
+		function packageImages(imgUrlsContainer) {
+
+			var imgUrls = imgUrlsContainer;
+			var folderName = '下载资料'+$("#customerName").val();
+			console.log('下载中,请稍等......');
+			if (imgUrls.length == 0) {
+				alert('没有对应的资料下载！');
+				return false;
+			}
+			var imgBase64 = [];
+			var imageSuffix = []; //图片后缀
+			var zip = new JSZip();
+			var img = zip.folder(folderName);
+
+			for (var i = 0; i < imgUrls.length; i++) {
+				var src = imgUrls[i];
+				var suffix = src.substring(src.lastIndexOf("."));
+				imageSuffix.push(suffix);
+				//src = src+"?x-oss-process=image/resize,m_lfit,h_1124,w_860&ran=" ;//避免从浏览器缓存加载，导致失败  + Math.random()
+				getBase64(src)
+					.then(function(base64) {
+						imgBase64.push(base64.substring(22));
+
+						//console.log(base64);//处理成功打印在控制台
+					}, function(err) {
+						console.log(err); //打印异常信息
+					});
+
+			}
+
+			function tt() {
+				setTimeout(function() {
+					if (imgUrls.length == imgBase64.length) {
+						for (var i = 0; i < imgUrls.length; i++) {
+							img.file(i + imageSuffix[i], imgBase64[i], {
+								base64: true
+							});
+						}
+						zip.generateAsync({
+							type: "blob"
+						}).then(function(content) {
+							// see FileSaver.js
+							saveAs(content, folderName + ".zip");
+						});
+						console.log('下载完成！');
+
+					} else {
+						//console.log('imgs.length:'+imgs.length+',imgBase64.length:'+imgBase64.length);
+						console.log('已完成：' + imgBase64.length + '/' + imgUrls.length);
+						tt();
+					}
+				}, 100);
+
+			}
+			tt();
+
+		}
+
+		//传入图片路径，返回base64
+		function getBase64(img) {
+			function getBase64Image(img, width, height) { //width、height调用时传入具体像素值，控制大小 ,不传则默认图像大小
+				var canvas = document.createElement("canvas");
+				canvas.width = width ? width : img.width;
+				canvas.height = height ? height : img.height;
+
+				var ctx = canvas.getContext("2d");
+				ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+				//var dataURL = canvas.toDataURL();
+				var dataURL = canvas.toDataURL("image/jpeg", 0.95);
+				return dataURL;
+			}
+			var image = new Image();
+			image.crossOrigin = 'Anonymous';
+			image.src = img;
+			var deferred = $.Deferred();
+			if (img) {
+				image.onload = function() {
+					deferred.resolve(getBase64Image(image)); //将base64传给done上传处理
+				}
+				return deferred.promise(); //问题要让onload完成后再return sessionStorage['imgTest']
+			}
+		}
+
+})();
+
+```
+
+> 浏览器推荐使用cent百分浏览器 和chrome一样规规矩矩但是功能更加丰富
+> > 扔几个用到的网址  
+> + [根据chrome插件id下载插件-网址](https://chrome-extension-downloader.com/) 
+> + [crx4chrome插件下载地址](https://www.crx4chrome.com/)
++ [极简图床_v2.25.0](https://www.lanzous.com/i1wu5yh) 
+    > 用于捕获网页上的图片，自定义选择，并可以打包从本地下载，非再次请求
++ [浏览器跨域插件](https://www.lanzous.com/i1yv65c)
+    > 解封浏览器所有跨域现状，web开发者使用  
++ [广告净化器](https://www.lanzous.com/i5ib6hc)
+    > 上网必备插件 过滤各种网页广告 已经爱奇艺优酷等视频等待广告
++ [Tampermonkey油猴脚本安装器](https://www.lanzous.com/i5ibcde) 
+    > 配合油猴脚本实现需要强大功能，这个chrome插件的另外一番天地。利用可以它可以解除百度网盘下载，解除禁止网页复制等，相当于在网页执行你自定义js功能，十分强大。网页上js能实现的它都能实现。-[油猴脚本库地址greasyfork](https://greasyfork.org/zh-CN)
++ [代理插件Proxy-SwitchyOmega](https://www.lanzous.com/i5icaxi)
+    > 浏览器控制代理的插件
++ [开发者api接口调用测试插件ApiDebug/和postman功能一样](https://www.lanzous.com/i5ic8zi)
++ [截整个页面包括往下的长截图fireshot](https://www.lanzous.com/i1zmfoh)
+    > 同样的功能还可以利用FastStone Capture截软件实现。[FastStone Captur绿色版下载](https://www.lanzous.com/i1v9qfc) 这款软件十分强大，可以截图，拼图，标注，录屏等，作者经常用到它。
++ [二维码生成器Quick QR8.02](https://www.lanzous.com/i5icdad)  
+    > 可生成浏览器当前页面的网址 手机扫描即可访问，也可以自定义二维码内容。
+> 研究各大浏览器及插件许久欢迎网友加QQ交流。火狐浏览器参考-《奔跑的奶酪》 《阳光盒子》 博客
+
+---
+
+
+## ps一寸照换背景
+> [教程地址](http://note.youdao.com/noteshare?id=9d6bbef561bdceb9f20fe55653fc7f02&sub=WEB44fe5710dcb725c31e65e035d2f86912)
+> ps抠图-处理头发边缘-快速 https://zhidao.baidu.com/question/54921963.html
+调整头发颜色为单一颜色(变蓝为黑)  https://zhidao.baidu.com/question/574420068.html
+美化修饰磨皮瘦脸眼睛放大额头调整 -1.大眼仔磨自定义皮，磨皮修脸PT Portrait（修饰大轮廓） 2.手机美图秀秀（嘴巴额头脸）
+
+---
+
+## vnote的使用心得
++ 怎么在新的地方同步git之前笔记
+    1. 先新建一个根目录笔记，将git文件夹克隆好后全部覆盖这个vnote笔记根目录，然后在vnote笔记点击  ***`从磁盘中重新加载 `***
+    ![](_v_images/20190820130231609_7112.png)
+     ![](_v_images/20190820130242995_31981.png)
+    2. 及时git-push 
+
+
+## 连接虚拟机centos7[链接](https://blog.csdn.net/n950814abc/article/details/79512834)
+
+
+
+## linux操作
+### vi命令[链接](https://www.cnblogs.com/sriba/p/8043471.html)
+### 常用工具
+#### putty
+#### Xshell
+#### WinSCP
+#### SmarTTY
+#### git
+
+### centos7安装 mariadb安装[链接](https://www.cnblogs.com/zhanzhan/p/7729981.html)
+
+```
+
+1、安装MariaDB
+
+安装命令
+
+yum -y install mariadb mariadb-server
+安装完成MariaDB，首先启动MariaDB
+
+systemctl start mariadb
+设置开机启动
+
+systemctl enable mariadb
+接下来进行MariaDB的相关简单配置
+
+mysql_secure_installation
+首先是设置密码，会提示先输入密码
+
+Enter current password for root (enter for none):<–初次运行直接回车
+
+设置密码
+
+Set root password? [Y/n] <– 是否设置root用户密码，输入y并回车或直接回车
+New password: <– 设置root用户的密码
+Re-enter new password: <– 再输入一次你设置的密码
+
+其他配置
+
+Remove anonymous users? [Y/n] <– 是否删除匿名用户，回车
+
+Disallow root login remotely? [Y/n] <–是否禁止root远程登录,回车,
+
+Remove test database and access to it? [Y/n] <– 是否删除test数据库，回车
+
+Reload privilege tables now? [Y/n] <– 是否重新加载权限表，回车
+
+初始化MariaDB完成，接下来测试登录
+
+mysql -uroot -ppassword
+完成。
+
+
+一、连接MYSQL
+
+　　格式： mysql -h主机地址 -u用户名 -p用户密码
+![](_v_images/20190924184408767_20962.png =314x)
+　　1、 连接到本机上的MYSQL。
+
+　　首先打开DOS窗口，然后进入目录mysql\bin，再键入命令mysql -u root -p，回车后提示你输密码.注意用户名前可以有空格也可以没有空格，但是密码前必须没有空格，否则让你重新输入密码.
+
+　　如果刚安装好MYSQL，超级用户root是没有密码的，故直接回车即可进入到MYSQL中了，MYSQL的提示符是： mysql>
+
+　　
+
+　　2、连接到远程主机上的MYSQL。假设远程主机的IP为：110.110.110.110，用户名为root,密码为abcd123。则键入以下命 令：
+
+　　mysql -h110.110.110.110 -u root -p 123;(注:u与root之间可以不用加空格，其它也一样)
+
+　　3、 退出MYSQL命令： exit (回车)
+
+
+````
+
+#### MariaDB允许远程连接
+
+> 三个设置完就可以使用了
+> [链接](https://www.cnblogs.com/mapu/p/9184212.html)
+> [链接](https://www.cnblogs.com/rxbook/p/8110143.html)
+> [链接](https://blog.csdn.net/leejianjun/article/details/51523822)
+
+### centos7安装jdk环境变量[链接](https://www.cnblogs.com/xuliangxing/p/7066913.html)
+
+
+
+# 知识学习
+## 学习内容
+1. 熟练使用Redis/MongoDB等NoSQL产品。
+2. 有MQ/MQTT/Dubbo等产品使用经验的优化；
+3. 掌握多线程及高性能的设计与编码及性能调优的优先，io流；
+4. 有高并发应用开发、微信开发经验的优先；
+5. 数据库mysql调优
+6. 掌握Redis,Elasticsearch等NoSQL技术,精通MySQL的开发设计和调优;
+7. 熟悉mysql等常用数据库及存储过程编写能力
+8. 熟悉高性能并发应用框架Netty、Erlang/OTP优先；
+9. 有zookeeper、dubbo等分布式服务框架使用经验者优先；
+10. 熟悉REST风格架构，有REST API接口开发经验；
+11. log4j配置
+
+---
+
+
+
+## Redis的学习

@@ -1,0 +1,17 @@
+vnote_backup_file_826537664 E:/VNote笔记/徐涛的笔记/后端/知识学习.md
+# 知识学习
+## 学习内容
+1. 熟练使用Redis/MongoDB等NoSQL产品。
+2. 有MQ/MQTT/Dubbo等产品使用经验的优化；
+3. 掌握多线程及高性能的设计与编码及性能调优的优先，io流；
+4. 有高并发应用开发、微信开发经验的优先；
+5. 数据库mysql调优
+6. 掌握Redis,Elasticsearch等NoSQL技术,精通MySQL的开发设计和调优;
+7. 熟悉mysql等常用数据库及存储过程编写能力
+8. 熟悉高性能并发应用框架Netty、Erlang/OTP优先；
+9. 有zookeeper、dubbo等分布式服务框架使用经验者优先；
+10. 熟悉REST风格架构，有REST API接口开发经验；
+11. log4j配置
+
+---
+## Redis的学习

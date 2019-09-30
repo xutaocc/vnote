@@ -1,0 +1,114 @@
+vnote_backup_file_826537664 E:/VNote笔记/徐涛的笔记/临时笔记.md
+# 临时笔记
+## 工作临时记录
+```
+diy-bigContainer-mainLoan
+
+
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;padding-right: 0px;">借款人姓名</label>
+								<input type="hidden" class="diy-loanId-input" id="loanId" name="loanId"  value="${loan.loanId}" />
+								<input type="text" class="mui-input-clear diy-name-input diy-needVerify" data-VerifyType="cnName" data-VerifyTitle="借款人姓名" data-VerifyErrorTip="输入错误" data-placeholder="请输入"  required name="customerName" id="customerName" value="${loan.customerName}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">身份证号</label>
+								<input type="text" class="mui-input-clear diy-idCard-input diy-needVerify" data-VerifyType="idCard" data-VerifyTitle="身份证号" data-VerifyErrorTip="输入错误" data-placeholder="请输入" required name="idCard" id="idCard" value="${loan.idCard}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">手机号码</label>
+								<input type="text" class="mui-input-clear diy-needVerify"  data-VerifyType="phone" data-VerifyTitle="手机号码" data-VerifyErrorTip="输入错误" data-placeholder="请输入"  required name="mobilePhone" id="mobilePhone" value="${loan.mobilePhone}"
+								 placeholder="请输入">
+							</div>
+
+
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">业务品种</label>
+								<select style="background-color:#eeeeee" name="carType" id="carType" class="diy-select-param diy-needVerify"   data-VerifyType="onlyRequired" data-VerifyTitle="手机号码"  data-VerifyErrorTip="必填项,输入错误" data-placeholder="请选择"  required diy-paramType="tm_bank_param" diy-paramTypeVal="1001" diy-defaultValue="${loan.carType}">
+									<option value="">-必选项请选择-</option>
+									
+								</select>
+
+							</div>
+
+
+
+idCard    onlySelectRequired    uploadPicture     cnName    phone    idCard
+
+
+
+diy-needVerify   data-VerifyType="isUploadPicture" 
+
+
+							<div class="mui-input-row">
+								<input type="hidden" class="diy-loanId-input" id="loanId" name="loanId"  value="${loan.loanId}" />
+								<label style="padding-left: 0px;padding-right: 0px;">借款人姓名</label>
+								<input type="text" class="mui-input-clear diy-name-input diy-needVerify" data-VerifyType="isZnName"   required name="customerName" id="customerName" value="${loan.customerName}"
+								 placeholder="借款人姓名">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">身份证号</label>
+								<input type="text" class="mui-input-clear diy-idCard-input diy-needVerify" data-VerifyType="isIdCard"  required name="idCard" id="idCard" value="${loan.idCard}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">手机号码</label>
+								<input type="text" class="mui-input-clear diy-needVerify"  data-VerifyType="isPhone"   required name="mobilePhone" id="mobilePhone" value="${loan.mobilePhone}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">报送银行</label>
+								<select style="background-color:#eeeeee" name="sendBank" id="sendBank" class="" required diy-paramType="tm_fix_code" diy-paramTypeVal="2070" diy-defaultValue="${loan.sendBank}">
+									<option value="20701001" selected>工行</option>
+									
+								</select>
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">业务品种</label>
+								<select style="background-color:#eeeeee" name="carType" id="carType" class="diy-select-param diy-needVerify"   data-VerifyType="isOnlySelectRequired"  required diy-paramType="tm_bank_param" diy-paramTypeVal="1001" diy-defaultValue="${loan.carType}">
+									<option value="">-必选项请选择-</option>
+									
+								</select>
+
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">家庭住址</label>
+								<input type="text" class="mui-input-clear diy-familyAddress-input  diy-needVerify"  data-VerifyType="isCommonCharacter"   required name="familyAddress" id="familyAddress" value="${loan.familyAddress}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">意向价格</label>
+								<input type="text" class="mui-input-clear diy-needVerify"  data-VerifyType="isMoney"   required name="intentionPrice" id="intentionPrice" value="${loan.intentionPrice}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">签发机关址</label>
+								<input type="text" class="mui-input-clear diy-issueAuthority-input diy-needVerify"  data-VerifyType="isCommonCharacter"  required name="issueAuthority" id="issueAuthority" value="${loan.issueAuthority}"
+								 placeholder="请输入">
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">证件起始日</label>
+								<input readonly style="float:none;width: 100px;padding-right: 0px" type="text" class="mui-input-clear diy-idCardStart-input diy-needVerify" data-VerifyType="isOnlySelectRequired" required name="startDate" 
+								 id="startDate" value="${loan.startDate}" placeholder="选择日期">
+								<span style="display: inline-block!important;" class="mui-icon mui-icon-clear "></span>
+								<span style="font-size: 28px;position: relative;top: 4px;" data-options='{"type":"date","value":"${loan.startDate}","beginYear":1940,"endYear":2050}'
+								 class="mui-icon-extra mui-icon-extra-calendar muiSelectDateBtn"></span>
+							</div>
+							<div class="mui-input-row">
+								<label style="padding-left: 0px;">证件截止日</label>
+								<input readonly style="float:none;width: 100px;padding-right: 0px" type="text" class="mui-input-clear diy-idCardEnd-input diy-needVerify"  data-VerifyType="isOnlySelectRequired"  required name="endDate"
+								 id="endDate" value="${loan.endDate}" placeholder="选择日期">
+								<span style="display: inline-block!important;" class="mui-icon mui-icon-clear "></span>
+								<span style="font-size: 28px;position: relative;top: 4px;" data-options='{"type":"date","value":"${loan.endDate}","beginYear":1940,"endYear":2050}'
+								 class="mui-icon-extra mui-icon-extra-calendar muiSelectDateBtn"></span>
+							</div>
+
+
+
+
+diy-bigContainer-mainLoan
+$(".diy-bigContainer-mainLoan #idCard:eq(0)").val();
+idCard
+```
+

@@ -1,0 +1,929 @@
+vnote_backup_file_826537664 D:/资料/Vnote笔记/徐涛的笔记/禾下工作/禾下cms模板.md
+[toc]
+# java
+## mybatis-foreach根据数组查询
++ java
+
+
+```java
+    @RequestMapping(value = "/queryBankMaterialInfoByKindArr")
+    @ResponseBody
+    public String queryBankMaterialInfoByKindArr(HttpServletRequest request){
+        Map<String, Object> params=Utility.getParamFromRequest(request);
+        List<String> listArr=new ArrayList<String>();
+        Collections.addAll(listArr,String.valueOf(request.getParameter("multipleFileType")).split(","));
+        params.put("multipleFileType", listArr);
+        logger.debug("-------------------params------------------"+params.toString());
+        List<Map<String,Object>>  fsFileuploads=tmBankMaterialMapper.queryBankMaterialInfoByKindArr(params);
+        JSONArray jsonarray=JSONArray.fromObject(fsFileuploads);
+        return jsonarray.toString();
+    }
+    
+     mapper
+     
+        List<Map<String, Object>> queryBankMaterialInfoByKindArr(Map<String, Object> map);
+```
++ xml
+```xml
+select * from table
+    WHERE 1=1
+        <!-- 几文件类型 -->
+    <if test="multipleFileType != null and multipleFileType != ''">
+        and tbm.material_code IN
+        <foreach item="patternFileType" index="index" collection="multipleFileType"
+               open="(" separator="," close=")"> #{patternFileType}</foreach>
+    </if>
+```
+# jsp ini模板
+## jsp `<c:forEach >`循环输出的写法配合造数组及java后台
+> jsp
+
+`<c:forEach var="creditSpouse" items="${creditSpouseList}"  varStatus="status">`
+```jsp
+	   <c:forEach var="creditSpouse" items="${creditSpouseList}"  varStatus="status">
+	    <fieldset>
+		<legend>
+			<h5 class="lighter blue">
+          	<a data-toggle="collapse" data-target="#spouse${status.index+1}InfoDiv" role="button" aria-expanded="true">关联人${status.index+1}信息</a>
+      		</h5>
+      	</legend>
+      	<div id="spouse${status.index+1}InfoDiv" class="collapse in" aria-expanded="true">
+      	<input type="hidden" name="spouseId" value="${creditSpouse.spouseId}" />
+      	<div class="row">
+					<div class="col-sm-12">
+		    			<ul id="itemTab" class="nav nav-tabs">
+							<li class="active"><a href="#spouse${status.index+1}FaceFile" data-toggle="tab">身份证正面照片</a>
+```
+
+> java
+
+```java
+List<TtBankCreditSpouse> creditSpouseList = new ArrayList<TtBankCreditSpouse>();
+for(int i=0;i<2;i++){
+				creditSpouseList.add(new TtBankCreditSpouse());
+			}
+```
+> js
+
+```js
+var json = [];
+var row = {};
+$("#spouseInfo :input").each(function(){
+    debugger;
+      var key = $(this).attr("name");
+      row[key]= $(this).val();
+      if(key=='enddate'){
+      	json.push(row);
+      	row = {};
+      }
+  	
+
+});
+```
+
+## gps领取Init
+![GPS领取](https://s2.ax1x.com/2019/08/05/e29zp6.png)
+
+```
+<%@ page contentType="text/html;charset=UTF-8" language="java"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<jsp:include page="/common/top.jsp"></jsp:include>
+<title>GPS库存管理</title>
+</head>
+<body>
+    <div id="advanceToolbar" class="hidden">
+        <div class="form-group">
+            <label class="control-label col-sm-3">GPS编号</label>
+            <div class="col-sm-9">
+                <input  type="text" class="form-control " name="gpsNOLike" id="gpsNOLike" value="" />
+            </div>
+        </div>
+    </div>
+    <div id="advanceToolbar2" class="hidden">
+        <div class="form-group">
+            <label class="control-label col-sm-3">GPS编号</label>
+            <div class="col-sm-9">
+                <input  type="text" class="form-control " name="gpsNOLike" id="gpsNOLike" value="" />
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <ul id="itemTab" class="nav nav-tabs">
+                <li class="active"><a href="#waitHandleId" data-toggle="tab">待领取</a></li>
+                <li><a href="#completedHandleId" data-toggle="tab">已领取未安装</a></li>
+                <!-- <li style="float:right;margin-top: 6px;"><button onclick="exportExcel()" class="btn btn btn-primary btn-sm" ><i class="fa fa-sign-out" aria-hidden="true"></i>导出表</button></li> -->
+            </ul>
+
+            <div id="itemTabContent" class="tab-content">
+
+                <div class="tab-pane fade  in active" id="waitHandleId">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="toolbarOfWait">
+                                <button id="addMultitude" class="btn btn-default">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>批量领取
+                                </button>
+                            </div>
+                            <table id="waitTable"></table>
+                            <div id="operationOfWait" class="hidden">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs"
+                                        onclick="postGps('%s')">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>领取
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade" id="completedHandleId">
+
+                    <div class="row">
+                        <div class="col-sm-12">
+
+                            <table id="completedTable"></table>
+
+                            <div id="completeOperation" class="hidden">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs"
+                                        onclick="gpsSingleReturnHandle('%s')">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>退回
+                                    </button>
+                                    <button type="button" class="btn btn-default btn-xs"
+                                        onclick="scrapSingleHandle('%s')">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>作废
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script type="text/javascript">
+        var addInfo = null, postGps = null, gpsSingleReturnHandle = null,scrapSingleHandle=null;
+        addMultitude = null;
+        buildCompletedTable = null;
+        (function($) {
+
+            var App = function(options) {
+
+                var that = this;
+                var $table = $('#waitTable');
+                //GPS单个退回
+                gpsSingleReturnHandle = function(gpsId) {
+                    console.log(gpsId+"退回");
+                    DmsDialog.open({
+                        url : ctx + '/carLoan/afterLoanOfGPS/gpsSingleReturnHandle/' + gpsId,
+                        size : 'size-wide',
+                        title : 'GPS退回',
+                        data : {
+                            
+                        },
+                        buttons : [ {
+                            label : '退回',
+                            icon : 'glyphicon glyphicon-check',
+                            id : 'commitBtn',
+                            cssClass : 'btn-primary',
+                            autospin : false
+                        }, {
+                            label : '返回',
+                            icon : 'fa fa-times',
+                            action : function(dialogRef) {
+                                dialogRef.setData('okCallback', null);
+                                dialogRef.close();
+                            }
+                        } ]
+                    }, function() {
+                        $table.dmsTable('refresh');
+                    });
+
+                };
+                //单个GPS报废
+                scrapSingleHandle=function(gpsId) {
+                    console.log(gpsId+"作废");
+                    DmsDialog.open({
+                        url : ctx + '/carLoan/afterLoanOfGPS/gpsScrapSingleHandle/' + gpsId,
+                        size : 'size-wide',
+                        title : 'GPS作废',
+                        data : {
+                            
+                        },
+                        buttons : [ {
+                            label : '作废',
+                            icon : 'glyphicon glyphicon-check',
+                            id : 'commitBtn',
+                            cssClass : 'btn-primary',
+                            autospin : false
+                        }, {
+                            label : '返回',
+                            icon : 'fa fa-times',
+                            action : function(dialogRef) {
+                                dialogRef.setData('okCallback', null);
+                                dialogRef.close();
+                            }
+                        } ]
+                    }, function() {
+                        $table.dmsTable('refresh');
+                    });
+
+                };
+                
+                
+                //gps单个领取
+                postGps = function(value) {
+                    DmsDialog.open({
+                        url : options.post_gps + "/" + value,
+                        size : 'size-wide',
+                        title : 'GPS领取',
+                        closable : false,
+                        data : {
+
+                        },
+                        buttons : [ {
+                            label : '提交',
+                            icon : 'glyphicon glyphicon-check',
+                            id : 'commitBtn',
+                            cssClass : 'btn-primary',
+                            autospin : false
+                        }, {
+                            label : '返回',
+                            icon : 'fa fa-times',
+                            action : function(dialogRef) {
+                                dialogRef.setData('okCallback', null);
+                                dialogRef.close();
+                            }
+                        } ]
+                    }, function() {
+                        $table.dmsTable('refresh');
+                    });
+
+                };
+
+                addMultitude = function() {
+                    DmsDialog.open(
+                                    {
+                                        url : ctx + '/carLoan/afterLoanOfGPS/addMultitudeGPSNo',
+                                        size : 'size-wide',
+                                        title : '批量领取GPS',
+                                        data : {
+                                        /* linkId :  "-999",
+                                        companyId: $('#companyId').val() */
+                                        },
+                                        //saveId : 'userSave',
+                                        buttons : [
+                                                {
+                                                    label : '领取',
+                                                    icon : 'glyphicon glyphicon-check',
+                                                    id : 'submitHandle',
+                                                    cssClass : 'btn-primary',
+                                                    autospin : false
+                                                },
+                                                {
+                                                    label : '返回',
+                                                    icon : 'fa fa-times',
+                                                    action : function(dialogRef) {
+                                                        dialogRef.setData(
+                                                                'okCallback',
+                                                                null);
+                                                        dialogRef.close();
+                                                    }
+                                                } ]
+                                    }, function() {
+                                        $table.dmsTable('refresh');
+                                    });
+
+                };
+
+
+                this.init = function() {
+                    buildTable();
+                };
+
+                //初始化表格
+                buildTable = function() {
+                    var _this = this;
+
+                    $table.dmsTable({
+                        url : options.query_api, //url : ctx + '/system/bank/icbcAboutInfoQuery',有没有这一行与筛选没有关系
+                        showRefresh : true,//刷新按钮
+                        showColumns : true,//列选择按钮
+                        toolbar : "#toolbarOfWait",//指定工具栏
+                        idTable:'advancedTable1',
+                        idForm:"advancedSearch1",
+                        showExport : true,//导出excel的工具部件
+                        advanceToolbar : '#advanceToolbar',//高级查询
+                        rowStyle : rowStyleNoWrap,
+                        queryParams : function getParams(params) {
+                            params.isReceive = '12781002';//12781002未领取
+                            params.status='20781001';//未安装
+                            return params;
+                        },
+                        onLoadSuccess : function() {
+
+                        },
+                        onPostBody : function() {
+                            $('.operation').dmsOperation();
+                        },
+                        columns : [ {
+                            title : "操作",
+                            field : "gpsId",
+                            searchable : false,
+                            sortable : true,
+                            width : 100,
+                            formatter : function(value, row, index) {
+                                return getOperation({
+                                    operationId : 'operationOfWait'
+                                }, value);
+                            }
+                        }, {
+                            title : "GPS编号",
+                            field : "gpsNo",
+                            searchable : false,
+                        }, {
+                            title : "是否领取",
+                            field : "isReceive",//这是重写了sql语句在对应xml中，将数字代码转化为了中文//primary_business
+                            formatter : 'dmsParse',
+                            filterControl : 'select',
+                            filterCode : {
+                                code : 1278
+                            },
+                        },{
+                            title : "安装状态",
+                            field : "status",
+                            formatter: 'dmsParse',
+                            filterControl:'select',
+                            filterCode:{
+                                code:2078
+                            },
+                        } , {
+                            title : "入库日期",
+                            field : "createDate",//这是重写了sql语句在对应xml中，将数字代码转化为了中文//primary_business
+                            searchable : true,
+                            filterControl : 'datepicker',
+                            formatter : dmsParse,
+                            formatterOps : {
+                                parseType : 'date',
+                                parseFormat : 'YYYY-MM-DD' // 格式化扩展，默认值为YYYY-MM-DD
+                            }
+                        }
+                        ]
+                    });
+                };
+                //初始化已领取表格
+                buildCompletedTable = function() {
+                    var _this = this;
+
+                    $('#completedTable').dmsTable({
+                        url : options.query_api, //url : ctx + '/system/bank/icbcAboutInfoQuery',有没有这一行与筛选没有关系
+                        showRefresh : true,//刷新按钮
+                        showColumns : true,//列选择按钮
+                        toolbar : "#toolbarOfCompleted",//指定工具栏
+                        idTable:'advancedTable2',
+                        idForm:"advancedSearch2",
+                        showExport : true,//导出excel的工具部件
+                        advanceToolbar : '#advanceToolbar2',//高级查询
+                        rowStyle : rowStyleNoWrap,
+                        queryParams : function getParams(params) {
+                            params.isReceive = '12781001';//12781001已领取
+                            params.status = '20781001';//20781001gps未安装
+                            return params;
+                        },
+                        onLoadSuccess : function() {
+
+                        },
+                        onPostBody : function() {
+                            $('.operation').dmsOperation();
+                        },
+                        columns : [ {
+                            title : "操作",
+                            field : "gpsId",
+                            searchable : false,
+                            sortable : true,
+                            width : 100,
+                            formatter : function(value, row, index) {
+                                return getOperation({
+                                    operationId : 'completeOperation'
+                                }, value);
+                            }
+                        }, {
+                            title : "GPS编号",
+                            field : "gpsNo",
+                            
+                        }, {
+                            title : "已经领取状态",
+                            field : "isReceive",//这是重写了sql语句在对应xml中，将数字代码转化为了中文//primary_business
+                            formatter : 'dmsParse',
+                            filterControl : 'select',
+                            filterCode : {
+                                code : 1278
+                            },
+                        } ,{
+                                title : "领取日期",
+                                field : "receiveDate",//这是重写了sql语句在对应xml中，将数字代码转化为了中文//primary_business
+                                searchable : true,
+                                   filterControl : 'datepicker',
+                                formatter: dmsParse,
+                                formatterOps:{
+                                    parseType:'date',
+                                    parseFormat : 'YYYY-MM-DD' // 格式化扩展，默认值为YYYY-MM-DD
+                                }
+                            },{
+                                title : "领取人签字",
+                                field : "signPerson",
+                                searchable : true,
+                            },{
+                                title : "领取个数",
+                                field : "receiveQuantity",
+                                
+                            },{
+                                title : "接收人",
+                                field : "receivePerson",
+                                
+                            },{
+                                title : "分公司",
+                                field : "companyName",
+                                searchable : true,
+                            },{
+                                title : "安装状态",
+                                field : "status",
+                                formatter: 'dmsParse',
+                                filterControl:'select',
+                                //searchable : true,
+                                filterCode:{
+                                    code:2078
+                                },
+                            } , {
+                            title : "入库日期",
+                            field : "createDate",//这是重写了sql语句在对应xml中，将数字代码转化为了中文//primary_business
+                            searchable : false,
+                            filterControl : 'datepicker',
+                            formatter : dmsParse,
+                            formatterOps : {
+                                parseType : 'date',
+                                parseFormat : 'YYYY-MM-DD' // 格式化扩展，默认值为YYYY-MM-DD
+                            }
+                        } ,{
+                            title : "领取备注",
+                            field : "remark",
+                        } 
+
+                        ]
+                    });
+                };
+
+                this.refresh = function() {
+                    $table.dmsTable('refresh');
+                };
+
+                this.initDom = function() {
+                    $('#addMultitude').on('click', function() {
+                        console.log("批量领取窗口");
+                        addMultitude();
+                    });
+                    $('a[href="#waitHandleId"]').on('click', function() {
+                        console.log("未领取窗口");
+                        buildTable();
+                    });
+                    $('a[href="#completedHandleId"]').on('click', function() {
+                        console.log("已领取窗口");
+                        buildCompletedTable();
+                    });
+                };
+            };
+
+            $(function() {
+                var app = new App(
+                        {
+                            query_api : ctx
+                                    + '/carLoan/afterLoanOfGPS/gpsStockInfoQuery',//可以不用写，写了的目的是为了方便query_api进行直接引用
+                            add_api : ctx + '/carLoan/afterLoanOfGPS/addGPSNo',
+                            addMultitude_api : ctx
+                                    + '/carLoan/afterLoanOfGPS/addMultitudeGPSNo',
+                            export_api : ctx
+                                    + '/carLoan/afterLoanOfGPS/exportGpsStockInfo',//导出经销商信息
+                            post_gps : ctx
+                                    + '/carLoan/afterLoanOfGPS/postSingleGpsJsp',
+                        });
+
+                app.init();//*初始化建表//this.buildTable();
+                app.initDom();//初始化点击触发事件
+            });
+
+        })(window.jQuery);
+    </script>
+</body>
+</html>
+
+```
+## table
+```js
+
+        $('#waitMortgageTable').dmsTable({
+            url: options.query_api,
+            showRefresh: true, //刷新按钮
+            showColumns: true, //列选择按钮
+            toolbar: "#toolbar", //指定工具栏
+            idTable: 'advancedTable1',
+            idForm: "advancedSearch1",
+            advanceToolbar: '#advanceToolbar1',
+            showExport: true,
+            //rowStyle : rowStyleNoWrap,//原先的
+            rowStyle: function(row, index) {
+                var strclass = "rowStyleNoWrap"; //
+                var css = {};
+
+                if (row.isForceNotoverdue == 12781001) {
+                    css = {
+                        "background-color": "#ffe"
+                    }
+                } else if (row.overdueDays > 0) {
+                    css = {
+                        'background-color': '#FF0000'
+                    }
+                } else if (-8 <= row.overdueDays && row.overdueDays <= 0) {
+                    css = {'background-color': '#FFFF00'}
+                } else {
+                    //背景色为白色不用管
+                }
+                return {
+                    classes: strclass,
+                    css: css
+                } //classes表示类,css具体样式
+            },
+            /* cellStyle:function(value,row,index){
+                if (row.isForceNotoverdue==12781001){
+                    return {css:{"background-color":"blue"}}
+                }
+            }, */
+            queryParams: function getParams(params) {
+                params.mortgageStatus = '20761002'; //20761002
+                //params.isReturn = '12781002';//否 不退款
+                return params;
+            },
+            onLoadSuccess: function (info) {
+                console.log(info);
+                if(info.list.length!=0){
+                    $("#toolbar2 h4 span").text(info.list[0].financeAdvanceDateStartShow+"/"+info.list[0].financeAdvanceDateEndShow);
+                }else{
+                    $("#toolbar2 h4 span").text("");
+                }
+            }, 
+            /**结合mybatis xml
+            
+        SELECT
+         <!-- 进件时间开始 -->
+         <if test="incomeDateStart != null and incomeDateStart !='' ">
+              #{incomeDateStart} as incomeDateStartLab,
+         </if>
+          a.company_name companyName,
+            
+            **/
+            
+            onPostBody: function() {
+                $('.operation').dmsOperation();
+            },
+            columns: [{
+                    title: "操作",
+                    field: "mortgageId",
+                    searchable: false,
+                    sortable: false,
+                    width: 100,
+                    formatter: function(value, row, index) {
+                        return getOperation({ operationId: 'waitOperation' }, value, row.overdueDays);
+                    }
+                },
+                 {
+                    title: "GPS安装日期",
+                    field: "install_date",
+                       formatter: function (value) {
+                           var myDate = new Date(value);    
+                           var year = myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+                           var month = myDate.getMonth()+1;       //获取当前月份(1-12)
+                           var day = myDate.getDate();        //获取当前日(1-31)
+                           //获取完整年月日
+                           var newDay = year + "-" + month + "-"  + day;
+                        if(typeof(value)=='undefined'){
+                            return "-";
+                        }else{
+                            return newDay;
+                        }
+                    
+                    }
+                }, 
+                {
+                    title: "当天日期",
+                    field: "nowDay",
+                       filterControl : 'datepicker',
+                    formatter: dmsParse,
+                    formatterOps:{
+                        parseType:'date',
+                        parseFormat : 'YYYY-MM-DD' // 格式化扩展，默认值为YYYY-MM-DD
+                    }
+                },
+                {
+                    title: "安装状态",
+                    field: "tgpsiStatus", 
+                    formatter: 'dmsParse',
+                    filterControl:'select',
+                    filterCode:{
+                        code:2078
+                    },
+                    
+                    
+                }, 
+                {
+                    title: "超期原因",
+                    field: "delay_reson",
+                    minWidth:150,
+                    width: 120, 
+                    formatter:dmsParse,
+                    formatterOps:{parseType : 'longString'}
+                }, 
+                
+            ],
+
+        });
+
+```
+## 自定义高级筛选 advanceToolbar3
+```html
+<div id="advanceToolbar3" class="hidden">
+    <div class="row">
+        <div class="form-group">
+            <label class="control-label col-sm-3">GPS编号</label>
+            <div class="col-sm-4">
+                <input  type="text" class="form-control " name="gpsNOLike" id="gpsNOLike" value="" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-sm-3">是否放款</label>
+            <div class="col-sm-9">
+                <!-- <input  type="text" class="form-control " name="isMakeLoans" id="isMakeLoans" value="" /> -->
+                <select class="form-control selectpicker show-tick" id="isMakeLoans" name="isMakeLoans">
+                    <!-- defaultOption="true" -->
+                    <option value="" selected="selected">-请选择-</option>
+                    <option value="12781001">已放款</option>
+                    <option value="12781002">未放款</option>
+    
+                </select>
+            </div>
+        </div> 
+        <div class="form-group form-group-sm">
+            <label class="control-label col-sm-3">财务垫资日期开始</label>
+            <div class="col-sm-4">
+                <div class="input-group input-group-sm date form_date ">
+                    <input  class="form-control" type="text" id="financeAdvanceAateStart" name="financeAdvanceAateStart" value=""  readonly/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    
+                </div>
+            </div>
+        </div>
+    
+        <div class="form-group form-group-sm">
+            <label class="control-label col-sm-3">财务垫资日期结束</label>
+            <div class="col-sm-4">
+                <div class="input-group input-group-sm date form_date ">
+                    <input  class="form-control" type="text" id="financeAdvanceAateEnd" name="financeAdvanceAateEnd"  value="" readonly/>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>    
+</div>    
+```
+## html标签
+
+
+# js
+## javascript json字符串与对象相互转换
+```js
+JSON字符串:
+var str1 = '{ "name": "cxh", "sex": "man" }'; 
+JSON对象:
+var str2 = { "name": "cxh", "sex": "man" };
+一、JSON字符串转换为JSON对象
+    var obj = str.parseJSON(); //由JSON字符串转换为JSON对象
+    * var obj = JSON.parse(str); //由JSON字符串转换为JSON对象
+二、可以使用toJSONString()或者全局方法JSON.stringify()将JSON对象转化为JSON字符串。
+    var last=obj.toJSONString(); //将JSON对象转化为JSON字符
+    * var last=JSON.stringify(obj); //将JSON对象转化为JSON字符    
+```
+## 余总将俩个相同的对象添加为数组形式
+```js
+var json = [];
+var row = {};
+$("#spouseInfo :input").each(function(){
+    debugger;
+      var key = $(this).attr("name");
+      row[key]= $(this).val();
+      if(key=='enddate'){
+      	json.push(row);
+      	row = {};
+      }
+  	
+
+});
+```
+![mZMr6K.png](https://s2.ax1x.com/2019/08/16/mZMr6K.png)
+## js初始化自执行
+1. 放在紧接着script后面的函数
++ $(function(){ });//文档加载好
++ (function () { console.log('自执行1'); } ());
+
+## js对象数组(JSON) 根据某个共同字段 分组
+[js对象数组(JSON) 根据某个共同字段 分组](https://www.cnblogs.com/rysinal/p/5834446.html)
+> js建议使用vscode测试
+
+```js
+var  arr  = [
+{ "id":  "1001", "name":  "值1", "value":  "111" },
+{ "id":  "1001", "name":  "值1", "value":  "11111" },
+{ "id":  "1002", "name":  "值2", "value":  "25462" },
+{ "id":  "1002", "name":  "值2", "value":  "23131" },
+{ "id":  "1002", "name":  "值2", "value":  "2315432" },
+{ "id":  "1003", "name":  "值3", "value":  "333333" }
+];
+
+var map = {},
+    dest = [];
+for (var i = 0; i < arr.length; i++) {
+    var ai = arr[i];
+    if (!map[ai.id]) {
+        dest.push({
+            id: ai.id,
+            // name: ai.name,
+            data: [ai]
+        });
+        map[ai.id] = ai;
+    } else {
+        for (var j = 0; j < dest.length; j++) {
+            var dj = dest[j];
+            if (dj.id == ai.id) {
+                dj.data.push(ai);
+                break;
+            }
+        }
+    }
+}
+
+console.log(dest);
+debugger;
+```
+## 根据数组对应分类map值对象
+```js
+var  arr  =
+[{CODE_NAME:  "已保存", REMARK:  "借款申请单状态", CODE_TYPE:  2064, CODE:  20641001}
+,{CODE_NAME:  "征信待查", REMARK:  "借款申请单状态", CODE_TYPE:  2064, CODE:  20641002}
+,{CODE_NAME:  "征信已查", REMARK:  "借款申请单状态", CODE_TYPE:  2064, CODE:  20641003}
+,{CODE_NAME:  "内勤大数据录入", REMARK:  "借款申请单状态", CODE_TYPE:  2064, CODE:  20641004}
+,{CODE_NAME:  "风控电核审核", REMARK:  "借款申请单状态", CODE_TYPE:  2064, CODE:  20641005}]
+;
+
+var  map  = {},
+dest  = [];
+for (var  i  =  0; i  <  arr.length; i++) {
+var  obj=arr[i];
+var  key=obj.CODE;
+var  val=obj.CODE_NAME;
+map[key]=val;
+}
+
+console.log(map);
+debugger;
+```
+
+## [动态添加的标签绑定click事件不响应和关于IOS下click事件委托失效的解决方案](https://blog.csdn.net/u011784205/article/details/76522091)
+
+## jquery
+
+### ajax
+
+
+```js
+var path = "${pageContext.request.contextPath}/dd/businessManagement/customerCreditApplication";
+$.ajax({
+    url: path + "/customerCreditApplicationInitQuery",
+    data: "limit=" + limit ,
+    type: "post",
+    //async: false,//false为同步
+    dataType: "json",
+    success: function(obj) {
+        
+    }
+});
+```
+### jquery杂项方法-filter数组过滤-建议使用grep
+```js
+var  newArr  =  queryBankParam.filter(function (p) {
+    //console.log(p); 
+    return  p.CODE_TYPE  ==  1005;
+    }).filter(function (p) {
+    return  p.CODE  ==  value;
+    });
+    if (newArr.length  ==  0) {
+    return  '-';
+    } else {
+
+    return  newArr[0].CODE_NAME;
+    }
+```
+
+### jquery杂项方法grep-过滤并返回满足指定函数的数组元素
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+<style>
+    div {
+        color: blue;
+    }
+    p {
+        color: green;
+        margin: 0;
+    }
+    span {
+        color: red;
+    }
+</style>    
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+    
+    
+    
+<div></div>
+<p></p>
+<span></span>
+<script>
+/*
+1, 9, 3, 8, 6, 1, 5, 9, 4, 7, 3, 8, 6, 9, 1
+
+1, 9, 4, 7, 3, 8, 6, 9, 1
+
+1, 4, 7, 3, 8, 6, 1
+
+*/
+$(function () { 
+    var arr = [ 1, 9, 3, 8, 6, 1, 5, 9, 4, 7, 3, 8, 6, 9, 1 ];
+    $( "div" ).text( arr.join( ", " ) );//显示
+    
+    arr = jQuery.grep(arr, function( n, i ) {//第一次过滤 n !== 5 && i > 4 n代表元素值 i代表当前值的下表
+        return ( n !== 5 && i > 4 );
+    });
+    $( "p" ).text( arr.join( ", " ) ); 
+    
+    
+    arr = jQuery.grep(arr, function( a ) {
+        return a !== 9;
+    });//第二次过滤 a !== 9;
+    
+    $( "span" ).text( arr.join( ", " ) );//显示
+})
+</script>
+ 
+</body>
+</html>
+```
+
+### jquery，代替toggle()绑定多个click事件方法
+1. 方法一
+```js
+$(".btn").on("click",function(){
+    //通过判断按钮btn有没有active这个class名判断是否已经点击过
+    if($(this).hasClass("active")){
+    //如果有了active，假设已经点击过了
+    //执行你的代码
+    //把active去掉
+    $(this).removeClass("active");
+    }else{
+    //没有active，假设还没有点击过
+    //执行你的代码
+    $(this).addClass("active");
+    }
+})
+```
+2. 方法二  [https://blog.csdn.net/chaplinlong/article/details/51198578](https://blog.csdn.net/chaplinlong/article/details/51198578)
+
+
